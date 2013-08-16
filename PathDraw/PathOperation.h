@@ -15,6 +15,7 @@ typedef NS_ENUM(NSInteger, PathOperationType){
     PathOperationRect,
     PathOperationCurveTo,
     PathOperationQuadCurveTo,
+    PathOperationEllipse,
     PathOperationClose,
 };
 

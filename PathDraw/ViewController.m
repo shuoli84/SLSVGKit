@@ -33,8 +33,8 @@
         [button setTitle:title forState:UIControlStateNormal];
         button.titleLabel.font = [UIFont boldSystemFontOfSize:17];
         [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithWhite:109/255.f alpha:1.0f] cornerRadius:0] forState:UIControlStateSelected];
-        [button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithWhite:109/255.f alpha:1.0f] cornerRadius:0] forState:UIControlStateHighlighted];
+        [button setTitleColor:[UIColor colorWithRed:52/255.0f green:152/255.0f blue:219/255.0f alpha:1.f] forState:UIControlStateSelected];
+        [button setTitleColor:[UIColor colorWithRed:52/255.0f green:152/255.0f blue:219/255.0f alpha:1.f] forState:UIControlStateHighlighted];
         [button addEventHandler:^(UIButton *btn) {
             for (UIButton *b in weakSelf.interlockButtonGroup){
                 if (![b isEqual:btn]){
@@ -64,12 +64,19 @@
             drawView.stroke = YES;
             return drawView;
         }()),
-        [dec(@"menuBar", CGRectMake(0, FVT(50), FVP(1), 50), ^{
+        [dec(@"menuBar", CGRectMake(0, FVT(100), FVP(1), 100), ^{
             UIView *view = [[UIView alloc] init];
             view.backgroundColor = [UIColor blackColor];
             return view;
         }()) $:@[
-            [dec(@"PenButton",F(0, 0, 55, 50), buttonCreateBlock(@"Pen")) process:^(FVDeclaration *declaration) {
+            [dec(@"selectModeButton",F(FVA(0), 0, 55, 50), buttonCreateBlock(@"Select")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [_interlockButtonGroup addObject:button];
+                [button addEventHandler:^(UIButton *btn) {
+                    weakSelf.drawView.mode = DrawModeSelect;
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
+            [dec(@"PenButton",F(FVA(0), 0, 55, 50), buttonCreateBlock(@"Pen")) process:^(FVDeclaration *declaration) {
                 UIButton *button = (UIButton *)declaration.object;
                 [_interlockButtonGroup addObject:button];
                 [button addEventHandler:^(UIButton *btn) {
@@ -104,61 +111,65 @@
                     weakSelf.drawView.mode = DrawModeRect;
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
-            [dec(@"antiAliasingButton",F(FVA(5), 0, 55, 50), buttonCreateBlock(@"Sharp")) process:^(FVDeclaration *declaration) {
+            [dec(@"EllipseButton",F(FVA(0), 0, 60, 50), buttonCreateBlock(@"Ellipse")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [_interlockButtonGroup addObject:button];
+                [button addEventHandler:^(id sender) {
+                    weakSelf.drawView.mode = DrawModeEllipse;
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
+            [dec(@"antiAliasingButton",F(0, FVA(0), 55, 50), buttonCreateBlock(@"AA")) process:^(FVDeclaration *declaration) {
                 UIButton *button = (UIButton *)declaration.object;
                 [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
                 [button addEventHandler:^(UIButton *btn) {
                     btn.selected = !btn.selected;
-                    weakSelf.drawView.antialiasing = !btn.selected;
+                    weakSelf.drawView.antialiasing = btn.selected;
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
-            [dec(@"selectModeButton",F(FVA(5), 0, 55, 50), buttonCreateBlock(@"Select")) process:^(FVDeclaration *declaration) {
+            [dec(@"fillModeButton",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"Fill")) process:^(FVDeclaration *declaration) {
                 UIButton *button = (UIButton *)declaration.object;
+                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
                 [button addEventHandler:^(UIButton *btn) {
-                    weakSelf.drawView.mode = DrawModeSelect;
+                    btn.selected = !btn.selected;
+                    weakSelf.drawView.fill = btn.selected;
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
-            dec(@"lineWidth", F(FVA(0), 0, 55, 50), ^{
-                UITextField *textField = [[UITextField alloc] init];
-                textField.backgroundColor = [UIColor whiteColor];
+             [dec(@"strokeModeButton",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"Stroke")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
+                [button addEventHandler:^(UIButton *btn) {
+                    btn.selected = !btn.selected;
+                    weakSelf.drawView.stroke = btn.selected;
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
 
-                [textField addEventHandler:^(UITextField *field) {
-                    CGFloat lineWidth = [field.text floatValue];
-                    if (lineWidth < 1.0){
-                        lineWidth = 1.0f;
-                    }
-                    weakSelf.drawView.lineWidth = lineWidth;
-                } forControlEvents:UIControlEventEditingChanged];
-
-                return textField;
-            }()),
-            [dec(@"undoButton",F(FVT(300), 0, 55, 50), buttonCreateBlock(@"Undo")) process:^(FVDeclaration *declaration) {
+            [dec(@"undoButton",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"Undo")) process:^(FVDeclaration *declaration) {
                 UIButton *button = (UIButton *)declaration.object;
                 [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
                 [button addEventHandler:^(id sender) {
                     [weakSelf.drawView undo];
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
-            [dec(@"redoButton",F(FVA(5), 0, 55, 50), buttonCreateBlock(@"Redo")) process:^(FVDeclaration *declaration) {
+            [dec(@"redoButton",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"Redo")) process:^(FVDeclaration *declaration) {
                 UIButton *button = (UIButton *)declaration.object;
                 [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
                 [button addEventHandler:^(id sender) {
                     [weakSelf.drawView redo];
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
-            [dec(@"clearButton",F(FVA(5), 0, 55, 50), buttonCreateBlock(@"Clear")) process:^(FVDeclaration *declaration) {
-                UIButton *button = (UIButton *)declaration.object;
-                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
-                [button addEventHandler:^(id sender) {
-                    [weakSelf.drawView clear];
-                } forControlEvents:UIControlEventTouchUpInside];
-            }],
-            [dec(@"deleteSelected",F(FVA(5), 0, 55, 50), buttonCreateBlock(@"delete")) process:^(FVDeclaration *declaration) {
+            [dec(@"deleteSelected",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"delete")) process:^(FVDeclaration *declaration) {
 
                 UIButton *button = (UIButton *)declaration.object;
                 [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
                 [button addEventHandler:^(id sender) {
                     [weakSelf.drawView removeSelected];
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
+            [dec(@"clearButton",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"Clear")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
+                [button addEventHandler:^(id sender) {
+                    [weakSelf.drawView clear];
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
         ]]

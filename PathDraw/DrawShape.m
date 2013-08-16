@@ -56,6 +56,9 @@
         else if (op.operationType == PathOperationRect){
             path = [UIBezierPath bezierPathWithRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x, op.controlPoint1.y)];
         }
+        else if(op.operationType == PathOperationEllipse){
+            path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x, op.controlPoint1.y)];
+        }
         else{
             NSAssert(NO, @"Should not execute here");
         }

@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, DrawMode){
     DrawModePath,
     DrawModeArc,
     DrawModeRect,
+    DrawModeEllipse,
 };
 
 @interface DrawView : UIView
@@ -29,6 +30,9 @@ typedef NS_ENUM(NSInteger, DrawMode){
 @property (nonatomic, strong) UIColor* strokeColor;
 @property (nonatomic, strong) UIColor* fillColor;
 @property (nonatomic, assign) CGSize originalSize;
+
+@property (nonatomic, copy) void (^fillChangeBlock)(BOOL fill);
+@property (nonatomic, copy) void (^strokeChangeBlock)(BOOL fill);
 
 -(void)clear;
 -(void)undo;
