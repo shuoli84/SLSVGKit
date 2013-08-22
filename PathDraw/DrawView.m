@@ -5,10 +5,8 @@
 // To change the template use AppCode | Preferences | File Templates.
 //
 
-
 #import "DrawView.h"
 #import "UIGestureRecognizer+BlocksKit.h"
-#import "FVDeclareHelper.h"
 #import "DrawCacheImage.h"
 #import "PathOperation.h"
 #import "DrawShape.h"
@@ -27,6 +25,12 @@ typedef void (^RedoBlock)();
 @implementation UndoItem
 @end
 
+typedef NS_ENUM(NSInteger, PointType){
+    PointTypeLocation,
+    PointTypeControlPoint1,
+    PointTypeControlPoint2,
+};
+
 @implementation DrawView {
     NSMutableArray *_shapeArray; //point array holds all points sets
     NSMutableArray *_undoArray; //Array holds blocks which undo
@@ -34,6 +38,8 @@ typedef void (^RedoBlock)();
 
     DrawShape * __weak _currentShape;
     PathOperation * __weak _currentPathOperation;
+    PointType _selectedPointType;
+
     int _bottomDrawShouldStartFromIndex;
     UIImageView* _bottomImageView;
     UIImageView* _middleImageView;
@@ -113,12 +119,15 @@ typedef void (^RedoBlock)();
     if (_currentShape.pathOperations.count == 0){
         op.operationType = PathOperationMoveTo;
         op.location = location;
+        op.controlPoint1 = op.location;
+        op.controlPoint2 = op.location;
     }
     else{
         op.locationType = LocationTypeRelativeToFirst;
         CGPoint firstPoint = [_currentShape absolutePointForIndex:0];
         op.location = CGPointMake(location.x - firstPoint.x, location.y - firstPoint.y);
         op.controlPoint1 = CGPointMake(controlPoint.x - firstPoint.x, controlPoint.y - firstPoint.y);
+        op.controlPoint2 = op.controlPoint1;
 
         op.operationType = operationType;
 
@@ -136,10 +145,78 @@ typedef void (^RedoBlock)();
     location = CGPointMake(floorf(location.x), floorf(location.y));
 
     if(_mode == DrawModeSelect){
-        _currentShape = nil;
-        for(DrawShape *shape in _shapeArray){
-            if(pointIsNearPoint([shape.pathOperations[0] location], location)){
-                _currentShape = shape;
+        _currentPathOperation = nil;
+        if(_currentShape != nil){
+            CGFloat minDistance = 10000;
+            int resultIndex = NSNotFound;
+            int shapeCount = _currentShape.operationsWithAbsolutePoint.count;
+            PointType selectedPointType = PointTypeLocation;
+            for(int index = 0; index < shapeCount; ++index){
+                PathOperation *op = _currentShape.operationsWithAbsolutePoint[index];
+                if(pointIsNearPoint(op.location, location)){
+                    CGFloat distance = distanceBetweenPoints(op.location, location);
+                    if(minDistance > distance){
+                        minDistance = distance;
+                        resultIndex = index;
+                        selectedPointType = PointTypeLocation;
+                    }
+                }
+
+                switch (op.operationType){
+                    case PathOperationQuadCurveTo:{
+                        if(pointIsNearPoint(op.controlPoint1, location)){
+                            CGFloat distance = distanceBetweenPoints(op.controlPoint1, location);
+                            if(minDistance > distance){
+                                minDistance = distance;
+                                resultIndex = index;
+                                selectedPointType = PointTypeControlPoint1;
+                            }
+                        }
+                        break;
+                    }
+
+                    case PathOperationArc:
+                    case PathOperationRect:
+                    case PathOperationOval:
+                    case PathOperationEllipse:
+                    case PathOperationCurveTo:{
+                        CGFloat distance;
+                        if(pointIsNearPoint(op.controlPoint1, location)){
+                            distance = distanceBetweenPoints(op.controlPoint1, location);
+                            if(minDistance > distance){
+                                minDistance = distance;
+                                resultIndex = index;
+                                selectedPointType = PointTypeControlPoint1;
+                            }
+                        }
+
+                        if(pointIsNearPoint(op.controlPoint2, location)){
+                            distance = distanceBetweenPoints(op.controlPoint2, location);
+                            if(minDistance > distance){
+                                minDistance = distance;
+                                resultIndex = index;
+                                selectedPointType = PointTypeControlPoint2;
+                            }
+                        }
+                        break;
+                    }
+                    default:
+                       break;
+                }
+            }
+
+            if(resultIndex != NSNotFound){
+                _currentPathOperation = _currentShape.pathOperations[resultIndex];
+                _selectedPointType = selectedPointType;
+            }
+        }
+        if(_currentPathOperation == nil){
+            _currentShape = nil;
+            for(DrawShape *shape in _shapeArray){
+                if(pointIsNearPoint([shape.pathOperations[0] location], location)){
+                    _currentShape = shape;
+                    _currentPathOperation = shape.pathOperations[0];
+                }
             }
         }
     }
@@ -154,6 +231,33 @@ typedef void (^RedoBlock)();
         PathOperation *op = [self pathOperationWithLocation:location controlPoint:location operationType:PathOperationLineTo];
         [self appendOperationToCurrentShape:op undoable:_currentShape.pathOperations.count > 0 ? YES : NO];
     }
+    else if(_mode == DrawModeInsert){
+        if(_currentShape && _currentPathOperation){
+            PathOperation *op = [self pathOperationWithLocation:location controlPoint:location operationType:PathOperationLineTo];
+            NSUInteger index = [_currentShape.pathOperations indexOfObject:_currentPathOperation];
+            if (index != NSNotFound){
+                int indexToBeInsert = index + 1;
+                [_currentShape.pathOperations insertObject:op atIndex:indexToBeInsert];
+
+                UndoItem *undo = [[UndoItem alloc]init];
+                DrawShape *shape = _currentShape;
+                undo.undoBlock = ^{
+                    [shape.pathOperations removeObject:op];
+                };
+                undo.redoBlock = ^{
+                    [shape.pathOperations insertObject:op atIndex:indexToBeInsert];
+                };
+                [self addUndoItem:undo];
+
+                _currentPathOperation = op;
+
+                self.mode = DrawModeSelect;
+            }
+            else{
+                NSLog(@"Error, not able to find index of the current point");
+            }
+        }
+    }
     [self drawImage];
 }
 
@@ -164,36 +268,72 @@ typedef void (^RedoBlock)();
     if(_mode == DrawModeSelect){
         static CGPoint locationToRestore;
         if(state == UIGestureRecognizerStateBegan){
-            _currentPathOperation = nil;
-            for(PathOperation *op in _currentShape.pathOperations){
-                if(pointIsNearPoint([_currentShape absolutePointForOperation:op], location)){
-                    _currentPathOperation = op;
-                }
-            }
             if (_currentPathOperation){
-                locationToRestore = _currentPathOperation.location;
+                switch (_selectedPointType){
+                    case PointTypeLocation:
+                        locationToRestore = _currentPathOperation.location;
+                        break;
+                    case PointTypeControlPoint1:
+                        locationToRestore = _currentPathOperation.controlPoint1;
+                        break;
+                    case PointTypeControlPoint2:
+                        locationToRestore = _currentPathOperation.controlPoint2;
+                        break;
+                };
             }
         }
         else{
             if(_currentPathOperation){
-                if(_currentPathOperation.locationType == LocationTypeAbsolute){
-                    _currentPathOperation.location = location;
-                }
-                else{
-                    _currentPathOperation.location = CGPointMake(_currentPathOperation.location.x + location.x - prevAbsolutePoint.x, _currentPathOperation.location.y + location.y - prevAbsolutePoint.y);
+                switch (_selectedPointType){
+                    case PointTypeLocation:
+                        _currentPathOperation.location = CGPointMake(_currentPathOperation.location.x + location.x - prevAbsolutePoint.x, _currentPathOperation.location.y + location.y - prevAbsolutePoint.y);
+                        break;
+                    case PointTypeControlPoint1:
+                        _currentPathOperation.controlPoint1 = CGPointMake(_currentPathOperation.controlPoint1.x + location.x - prevAbsolutePoint.x, _currentPathOperation.controlPoint1.y + location.y - prevAbsolutePoint.y);
+                        break;
+                    case PointTypeControlPoint2:
+                        _currentPathOperation.controlPoint2 = CGPointMake(_currentPathOperation.controlPoint2.x + location.x - prevAbsolutePoint.x, _currentPathOperation.controlPoint2.y + location.y - prevAbsolutePoint.y);
+                        break;
                 }
 
                 if(state == UIGestureRecognizerStateEnded){
                     CGPoint l = locationToRestore;
-                    CGPoint newLocation = _currentPathOperation.location;
+                    CGPoint newLocation;
                     PathOperation *op = _currentPathOperation;
                     UndoItem *undo = [[UndoItem alloc]init];
-                    undo.undoBlock = ^{
-                        op.location = l;
-                    };
-                    undo.redoBlock = ^{
-                        op.location = newLocation;
-                    };
+
+                    switch (_selectedPointType){
+                        case PointTypeLocation: {
+                            newLocation = _currentPathOperation.location;
+                            undo.undoBlock = ^{
+                                op.location = l;
+                            };
+                            undo.redoBlock = ^{
+                                op.location = newLocation;
+                            };
+                            break;
+                        }
+                        case PointTypeControlPoint1:{
+                            newLocation = _currentPathOperation.controlPoint1;
+                            undo.undoBlock = ^{
+                                op.controlPoint1 = l;
+                            };
+                            undo.redoBlock = ^{
+                                op.controlPoint1 = newLocation;
+                            };
+                            break;
+                        }
+                        case PointTypeControlPoint2:{
+                            newLocation = _currentPathOperation.controlPoint2;
+                            undo.undoBlock = ^{
+                                op.controlPoint2 = l;
+                            };
+                            undo.redoBlock = ^{
+                                op.controlPoint2 = newLocation;
+                            };
+                            break;
+                        }
+                    }
                     [self addUndoItem:undo];
                 }
             }
@@ -205,6 +345,8 @@ typedef void (^RedoBlock)();
             PathOperation *op = [[PathOperation alloc]init];
             op.operationType = PathOperationMoveTo;
             op.location = location;
+            op.controlPoint1 = location;
+            op.controlPoint2 = location;
             [self appendOperationToCurrentShape:op undoable:NO];
         }
         else{
@@ -214,6 +356,8 @@ typedef void (^RedoBlock)();
                 op.locationType = LocationTypeRelativeToFirst;
                 CGPoint firstPoint = [_currentShape.pathOperations[0] location];
                 op.location = CGPointMake(location.x - firstPoint.x, location.y - firstPoint.y);
+                op.controlPoint1 = op.location;
+                op.controlPoint2 = op.location;
                 [self appendOperationToCurrentShape:op undoable:NO];
             }
         }
@@ -225,6 +369,8 @@ typedef void (^RedoBlock)();
             PathOperation *op = [[PathOperation alloc]init];
             op.operationType = PathOperationMoveTo;
             op.location = location;
+            op.controlPoint1 = op.location;
+            op.controlPoint2 = op.location;
             [self appendOperationToCurrentShape:op undoable:NO];
         }
         else{
@@ -240,6 +386,8 @@ typedef void (^RedoBlock)();
             }
             CGPoint firstLocation = [_currentShape.pathOperations[0] location];
             op.location = CGPointMake(location.x - firstLocation.x, location.y - firstLocation.y);
+            op.controlPoint1 = op.location;
+            op.controlPoint2 = op.location;
         }
     }
     else if (_mode == DrawModePath){
@@ -266,12 +414,15 @@ typedef void (^RedoBlock)();
             PathOperation *op = [[PathOperation alloc]init];
             op.operationType = PathOperationArc;
             op.location = location;
-            op.controlPoint1 = CGPointMake(0, 0);
+            //op.controlPoint1 = CGPointMake(0, 0);
+            op.controlPoint1 = op.location;
+            op.controlPoint2 = op.location;
             [self appendOperationToCurrentShape:op undoable:NO];
         }
         else{
             PathOperation *op = _currentShape.pathOperations.lastObject;
-            op.controlPoint1 = CGPointMake(distanceBetweenPoints(op.location, location), 0);
+            op.controlPoint1 = location;
+            op.controlPoint2 = location;
         }
     }
     else if (_mode == DrawModeRect){
@@ -281,12 +432,13 @@ typedef void (^RedoBlock)();
             PathOperation *op = [[PathOperation alloc]init];
             op.operationType = PathOperationRect;
             op.location = location;
-            op.controlPoint1 = CGPointZero;
+            op.controlPoint1 = op.location;
+            op.controlPoint2 = op.location;
             [self appendOperationToCurrentShape:op undoable:NO];
         }
         else{
             PathOperation *op = _currentShape.pathOperations.lastObject;
-            op.controlPoint1 = CGPointMake(location.x - op.location.x, location.y - op.location.y);
+            op.controlPoint1 = location;
         }
     }
     else if(_mode == DrawModeEllipse){
@@ -296,13 +448,14 @@ typedef void (^RedoBlock)();
             PathOperation *op = [[PathOperation alloc] init];
             op.operationType = PathOperationEllipse;
             op.location = location;
-            op.controlPoint1 = CGPointZero;
+            op.controlPoint1 = location;
+            op.controlPoint2 = location;
 
             [self appendOperationToCurrentShape:op undoable:NO];
         }
         else{
             PathOperation *op = _currentShape.pathOperations.lastObject;
-            op.controlPoint1 = CGPointMake(location.x - op.location.x, location.y - op.location.y);
+            op.controlPoint1 = location;
         }
     }
     [self drawImage];
@@ -381,8 +534,9 @@ typedef void (^RedoBlock)();
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0f);
         [self drawShape:_shapeArray[_bottomDrawShouldStartFromIndex]];
 
-        if(_mode == DrawModeSelect){
+        if(_mode == DrawModeSelect || _mode == DrawModeInsert){
             [[UIColor blueColor] setStroke];
+            PathOperation *prevOp = nil;
             for(PathOperation *op in _currentShape.operationsWithAbsolutePoint){
                 [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.location.x - 2.5, op.location.y - 2.5, 5, 5)] stroke];
                 if(op.operationType == PathOperationQuadCurveTo){
@@ -393,12 +547,52 @@ typedef void (^RedoBlock)();
                     [path addLineToPoint:op.controlPoint1];
                     [path stroke];
                 }
+                else if(op.operationType == PathOperationCurveTo){
+                    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.controlPoint1.x - 2.5, op.controlPoint1.y - 2.5, 5, 5)] stroke];
+                    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.controlPoint2.x - 2.5, op.controlPoint2.y - 2.5, 5, 5)] stroke];
+
+                    UIBezierPath *path = [UIBezierPath bezierPath];
+                    [path moveToPoint:op.location] ;
+                    [path addLineToPoint:op.controlPoint2];
+                    [path moveToPoint:op.controlPoint1];
+                    [path addLineToPoint:prevOp.location];
+                    [path stroke];
+                }
+                else if(op.operationType == PathOperationArc){
+                    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.controlPoint1.x - 2.5, op.controlPoint1.y - 2.5, 5, 5)] stroke];
+                    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.controlPoint2.x - 2.5, op.controlPoint2.y - 2.5, 5, 5)] stroke];
+                }
+                else if(op.operationType == PathOperationEllipse || op.operationType == PathOperationOval || op.operationType == PathOperationRect){
+                    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.controlPoint1.x - 2.5, op.controlPoint1.y - 2.5, 5, 5)] stroke];
+                }
+                prevOp = op;
+            }
+
+            if(_currentPathOperation != nil){
+                [[UIColor greenColor] setStroke];
+                CGPoint location = _currentPathOperation.location;
+
+                if(_selectedPointType == PointTypeControlPoint1){
+                    location = _currentPathOperation.controlPoint1;
+                }
+                else if(_selectedPointType == PointTypeControlPoint2){
+                    location = _currentPathOperation.controlPoint2;
+                }
+
+                if(_currentPathOperation.locationType == LocationTypeRelativeToFirst){
+                    location.x = location.x + [_currentShape.pathOperations[0] location].x;
+                    location.y = location.y + [_currentShape.pathOperations[0] location].y;
+                }
+                UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(location.x - 5, location.y - 5, 10, 10)];
+                [path stroke];
             }
 
             [[UIColor colorWithRed:52.f/255.f green:152.f/255.f blue:219.f/255.f alpha:0.7f] setFill];
             for (DrawShape *shape in _shapeArray){
-                PathOperation *op = shape.pathOperations[0];
-                [[UIBezierPath bezierPathWithArcCenter:op.location radius:10 startAngle:0 endAngle:M_PI*2 clockwise:YES] fill];
+                if(shape.pathOperations.count > 0){
+                    PathOperation *op = shape.pathOperations[0];
+                    [[UIBezierPath bezierPathWithArcCenter:op.location radius:10 startAngle:0 endAngle:M_PI*2 clockwise:YES] fill];
+                }
             }
         }
         _middleImageView.image = UIGraphicsGetImageFromCurrentImageContext();
@@ -424,8 +618,8 @@ typedef void (^RedoBlock)();
 -(void)drawShape:(DrawShape*)shape{
     [shape generatePath];
     UIBezierPath *path = shape.path;
-    CGContextSetAllowsAntialiasing(UIGraphicsGetCurrentContext(), shape.antialiasing);
-    if(shape.antialiasing){
+    CGContextSetAllowsAntialiasing(UIGraphicsGetCurrentContext(), shape.antiAliasing);
+    if(shape.antiAliasing){
         CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
     }
     if (shape.stroke){
@@ -448,7 +642,7 @@ typedef void (^RedoBlock)();
 -(void)setupCurrentShape{
     DrawShape *shape = [[DrawShape alloc]init];
     shape.lineWidth = _lineWidth;
-    shape.antialiasing = _antialiasing;
+    shape.antiAliasing = _antialiasing;
     shape.fill = _fill;
     shape.stroke = _stroke;
     shape.fillColor = _fillColor;
@@ -496,7 +690,6 @@ typedef void (^RedoBlock)();
 }
 
 -(void)setMode:(DrawMode)mode {
-    _currentShape = nil;
     _mode = mode;
     [self drawImage];
 }
@@ -540,28 +733,116 @@ typedef void (^RedoBlock)();
     [self drawImage];
 }
 
--(void)removeSelected{
-    if(_mode == DrawModeSelect){
-        if(_currentShape){
-            DrawShape *shape = _currentShape;
-            int index = [_shapeArray indexOfObject:shape];
-            [_shapeArray removeObjectAtIndex:index];
+-(void)dropCurrentShape {
+    if(_currentShape){
+        DrawShape *shape = _currentShape;
+        int index = [_shapeArray indexOfObject:shape];
+        [_shapeArray removeObjectAtIndex:index];
 
-            typeof(self) __weak weakSelf = self;
+        typeof(self) __weak weakSelf = self;
+        UndoItem *undo = [[UndoItem alloc]init];
+        undo.undoBlock = ^{
+            typeof(weakSelf) __strong strongSelf = weakSelf;
+            [strongSelf->_shapeArray insertObject:shape atIndex:index];
+        };
+        undo.redoBlock = ^{
+            typeof(weakSelf) __strong strongSelf = weakSelf;
+            [strongSelf->_shapeArray removeObject:shape];
+        };
+        [self addUndoItem:undo];
+
+        [self refresh];
+
+        _currentShape = nil;
+    }
+}
+
+-(void)dropCurrentPathOperation {
+    if(_currentPathOperation){
+        if(_currentShape.pathOperations.count == 1){
+            [self dropCurrentShape];
+            return;
+        }
+        NSInteger index = [_currentShape.pathOperations indexOfObject:_currentPathOperation];
+        [_currentShape.pathOperations removeObjectAtIndex:index];
+
+        UndoItem *undo = [[UndoItem alloc]init];
+
+        DrawShape *shape = _currentShape;
+        PathOperation *op = _currentPathOperation;
+        undo.undoBlock = ^{
+            [shape.pathOperations insertObject:op atIndex:index];
+        };
+
+        undo.redoBlock = ^{
+            [shape.pathOperations removeObjectAtIndex:index];
+        };
+
+        [self addUndoItem:undo];
+        [self refresh];
+        _currentPathOperation = nil;
+    }
+}
+
+-(void)rollOperationType{
+    if(_currentPathOperation){
+        PathOperationType type = _currentPathOperation.operationType;
+        [self changeCurrentPathOperationType:(type + 1) % PathOperationClose + 1];
+
+        [self refresh];
+    }
+}
+
+-(void)changeCurrentPathOperationType:(PathOperationType)operationType{
+    if(_currentPathOperation){
+        _currentPathOperation.operationType = operationType;
+
+        PathOperation *op = _currentPathOperation;
+        PathOperationType prevType = op.operationType;
+
+        UndoItem *undo = [[UndoItem alloc]init];
+
+        undo.undoBlock = ^{
+            op.operationType = prevType;
+        };
+
+        undo.redoBlock = ^{
+            op.operationType = operationType;
+        };
+
+        [self addUndoItem:undo];
+    }
+}
+
+-(void)sendBack:(int)far{
+    if(_currentShape){
+        int prevIndex = [_shapeArray indexOfObject:_currentShape];
+        int targetIndex = prevIndex - far;
+        if(targetIndex < 0){
+            targetIndex = 0;
+        }
+        else if(targetIndex >= _shapeArray.count){
+            targetIndex = _shapeArray.count - 1;
+        }
+        if(prevIndex != targetIndex){
+            [_shapeArray removeObjectAtIndex:prevIndex];
+            [_shapeArray insertObject:_currentShape atIndex:targetIndex];
+
+            DrawShape *shape = _currentShape;
+            NSMutableArray *shapeArray = _shapeArray;
             UndoItem *undo = [[UndoItem alloc]init];
             undo.undoBlock = ^{
-                typeof(weakSelf) __strong strongSelf = weakSelf;
-                [strongSelf->_shapeArray insertObject:shape atIndex:index];
+                [shapeArray removeObjectAtIndex:targetIndex];
+                [shapeArray insertObject:shape atIndex:prevIndex];
             };
+
             undo.redoBlock = ^{
-                typeof(weakSelf) __strong strongSelf = weakSelf;
-                [strongSelf->_shapeArray removeObject:shape];
+                [shapeArray removeObjectAtIndex:prevIndex];
+                [shapeArray insertObject:shape atIndex:targetIndex];
             };
             [self addUndoItem:undo];
 
             [self refresh];
-
-            _currentShape = nil;
         }
     }
 }

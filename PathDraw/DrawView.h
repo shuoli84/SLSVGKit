@@ -7,6 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import "PathOperation.h"
 
 @class DrawCacheImage;
 
@@ -18,6 +19,7 @@ typedef NS_ENUM(NSInteger, DrawMode){
     DrawModeArc,
     DrawModeRect,
     DrawModeEllipse,
+    DrawModeInsert,
 };
 
 @interface DrawView : UIView
@@ -38,6 +40,9 @@ typedef NS_ENUM(NSInteger, DrawMode){
 -(void)undo;
 -(void)redo;
 -(void)refresh;
--(void)removeSelected;
-
+-(void)dropCurrentShape;
+-(void)dropCurrentPathOperation;
+-(void)rollOperationType;
+-(void)changeCurrentPathOperationType:(PathOperationType)operationType;
+-(void)sendBack:(int)far;
 @end

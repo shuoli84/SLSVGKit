@@ -12,11 +12,13 @@ typedef NS_ENUM(NSInteger, PathOperationType){
     PathOperationMoveTo,
     PathOperationLineTo,
     PathOperationArc,
-    PathOperationRect,
     PathOperationCurveTo,
     PathOperationQuadCurveTo,
-    PathOperationEllipse,
     PathOperationClose,
+
+    PathOperationOval,
+    PathOperationRect,
+    PathOperationEllipse,
 };
 
 typedef NS_ENUM(NSInteger, LocationType){

@@ -15,6 +15,7 @@
 		BE48E0D6FD75416C5062DD9A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */; };
 		BE48E0F768D23189F7C0CCF4 /* transparent-checkerboard.png in Resources */ = {isa = PBXBuildFile; fileRef = BE48ED594E37FB611DFBDBF9 /* transparent-checkerboard.png */; };
 		BE48E1DB2AA06AD98D22CD4F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = BE48E5D64665F15C5FD93EEE /* Default.png */; };
+		BE48E312F30C36341D1929B3 /* DrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E69F905B8E762EF858EA /* DrawDocument.m */; };
 		BE48E3B8CF9BC5CEBE192FD1 /* DrawView.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EDEC68B28EC1EC7D0E44 /* DrawView.m */; };
 		BE48E3C096E186119BD80433 /* RecurseFense.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E56F47AA21CDC92AD39E /* RecurseFense.m */; };
 		BE48E4A20EC23B6AB45BD1DF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E0014F7E82D63F90E8E2 /* ViewController.m */; };
@@ -65,12 +66,14 @@
 		BE48E332D3DA04A9D0658153 /* CGUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGUtil.m; sourceTree = "<group>"; };
 		BE48E3DD8DEE223192276DD0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		BE48E40E6B41F9C34529D32D /* DrawShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawShape.h; sourceTree = "<group>"; };
+		BE48E414FD0123DB8F46655B /* DrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawDocument.h; sourceTree = "<group>"; };
 		BE48E45C6FD14D391DB5D94B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BE48E4FC34EA054A2ED32259 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		BE48E56F47AA21CDC92AD39E /* RecurseFense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecurseFense.m; sourceTree = "<group>"; };
 		BE48E5D64665F15C5FD93EEE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		BE48E5DD631B64932F38A7B3 /* PathDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PathDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48E6442472EE5C35B0B5D8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		BE48E69F905B8E762EF858EA /* DrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawDocument.m; sourceTree = "<group>"; };
 		BE48E86EEC2AC15966193DF6 /* PathDrawTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PathDrawTests.m; sourceTree = "<group>"; };
 		BE48E8C201024C03BDF3E19B /* transparent-checkerboard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "transparent-checkerboard@2x.png"; sourceTree = "<group>"; };
 		BE48E8D420910322439CED45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -173,6 +176,8 @@
 				BE48E40E6B41F9C34529D32D /* DrawShape.h */,
 				BE48E332D3DA04A9D0658153 /* CGUtil.m */,
 				BE48E1E50DE0F6B5DF5E9966 /* CGUtil.h */,
+				BE48E69F905B8E762EF858EA /* DrawDocument.m */,
+				BE48E414FD0123DB8F46655B /* DrawDocument.h */,
 			);
 			path = PathDraw;
 			sourceTree = "<group>";
@@ -400,6 +405,7 @@
 				BE48E5F850A61FE02B3065EC /* PathOperation.m in Sources */,
 				BE48E909AC803D92FA64AEB2 /* DrawShape.m in Sources */,
 				BE48E5732F2AFAF2A3C65B5C /* CGUtil.m in Sources */,
+				BE48E312F30C36341D1929B3 /* DrawDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

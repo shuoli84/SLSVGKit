@@ -7,25 +7,27 @@
 
 
 #import <Foundation/Foundation.h>
+#import <JSONModel/JSONModel.h>
 
 @class PathOperation;
 
-@interface DrawShape : NSObject
-@property (nonatomic, assign) int identity;
-@property (nonatomic, strong) NSMutableArray *pathOperations;
+@protocol PathOperation @end
+
+@interface DrawShape : JSONModel
+@property (nonatomic, strong) NSMutableArray<PathOperation> *pathOperations;
 @property (nonatomic, assign) CGFloat lineWidth;
 @property (nonatomic, assign) BOOL stroke;
 @property (nonatomic, assign) BOOL fill;
 @property (nonatomic, strong) UIColor* strokeColor;
 @property (nonatomic, strong) UIColor* fillColor;
-@property (nonatomic, assign) BOOL antialiasing;
-
-@property (nonatomic, strong) UIBezierPath *path;
+@property (nonatomic, assign) BOOL antiAliasing;
 
 -(void)appendOperation:(PathOperation *)operation;
 -(void)generatePath;
 
 -(CGPoint)absolutePointForIndex:(NSInteger)index;
--(CGPoint)absolutePointForOperation:(PathOperation *)op;
 -(NSArray *)operationsWithAbsolutePoint;
+
+-(UIBezierPath *)path;
+-(void)setPath:(UIBezierPath *)path;
 @end

@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import "DrawView.h"
 #import "FVDeclareHelper.h"
-#import "UIImage+FlatUI.h"
 #import "UIControl+BlocksKit.h"
 
 @interface ViewController ()
@@ -118,6 +117,13 @@
                     weakSelf.drawView.mode = DrawModeEllipse;
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
+            [dec(@"EllipseButton",F(FVA(0), 0, 60, 50), buttonCreateBlock(@"Insert")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [_interlockButtonGroup addObject:button];
+                [button addEventHandler:^(id sender) {
+                    weakSelf.drawView.mode = DrawModeInsert;
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
             [dec(@"antiAliasingButton",F(0, FVA(0), 55, 50), buttonCreateBlock(@"AA")) process:^(FVDeclaration *declaration) {
                 UIButton *button = (UIButton *)declaration.object;
                 [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
@@ -162,7 +168,30 @@
                 UIButton *button = (UIButton *)declaration.object;
                 [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
                 [button addEventHandler:^(id sender) {
-                    [weakSelf.drawView removeSelected];
+                    [weakSelf.drawView dropCurrentShape];
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
+
+            [dec(@"deleteSelected",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"drop point")) process:^(FVDeclaration *declaration) {
+
+                UIButton *button = (UIButton *)declaration.object;
+                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
+                [button addEventHandler:^(id sender) {
+                    [weakSelf.drawView dropCurrentPathOperation];
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
+            [dec(@"deleteSelected",F(FVA(5), FVSameAsPrev, 70, 50), buttonCreateBlock(@"Roll type")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
+                [button addEventHandler:^(id sender) {
+                    [weakSelf.drawView rollOperationType];
+                } forControlEvents:UIControlEventTouchUpInside];
+            }],
+            [dec(@"sendBack",F(FVA(5), FVSameAsPrev, 100, 50), buttonCreateBlock(@"SendBack")) process:^(FVDeclaration *declaration) {
+                UIButton *button = (UIButton *)declaration.object;
+                [button removeEventHandlersForControlEvents:UIControlEventTouchUpInside];
+                [button addEventHandler:^(id sender) {
+                    [weakSelf.drawView sendBack:1];
                 } forControlEvents:UIControlEventTouchUpInside];
             }],
             [dec(@"clearButton",F(FVA(5), FVSameAsPrev, 55, 50), buttonCreateBlock(@"Clear")) process:^(FVDeclaration *declaration) {

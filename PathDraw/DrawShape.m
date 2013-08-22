@@ -8,8 +8,11 @@
 
 #import "DrawShape.h"
 #import "PathOperation.h"
+#import "CGUtil.h"
 
-@implementation DrawShape
+@implementation DrawShape{
+    UIBezierPath *_path;
+}
 -(id)init{
     self = [super init];
     if(self){
@@ -17,7 +20,7 @@
         _lineWidth = 1.f;
         _stroke = YES;
         _fill = NO;
-        _antialiasing = YES;
+        _antiAliasing = YES;
         _strokeColor = [UIColor redColor];
         _fillColor = [UIColor orangeColor];
     }
@@ -38,29 +41,44 @@
     UIBezierPath *path =[UIBezierPath bezierPath];
 
     for(PathOperation *op in self.operationsWithAbsolutePoint){
-        if(op.operationType == PathOperationLineTo){
-            [path addLineToPoint:op.location];
-        }
-        else if (op.operationType == PathOperationQuadCurveTo){
-            [path addQuadCurveToPoint:op.location controlPoint:op.controlPoint1];
-        }
-        else if (op.operationType == PathOperationClose){
-            [path closePath];
-        }
-        else if(op.operationType == PathOperationMoveTo){
-            [path moveToPoint:op.location];
-        }
-        else if (op.operationType == PathOperationArc){
-            [path addArcWithCenter:op.location radius:op.controlPoint1.x startAngle:0 endAngle:2*M_PI clockwise:YES];
-        }
-        else if (op.operationType == PathOperationRect){
-            path = [UIBezierPath bezierPathWithRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x, op.controlPoint1.y)];
-        }
-        else if(op.operationType == PathOperationEllipse){
-            path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x, op.controlPoint1.y)];
-        }
-        else{
-            NSAssert(NO, @"Should not execute here");
+        switch (op.operationType){
+            case PathOperationLineTo:
+                [path addLineToPoint:op.location];
+                break;
+            case PathOperationQuadCurveTo:
+                [path addQuadCurveToPoint:op.location controlPoint:op.controlPoint1];
+                break;
+            case PathOperationClose:
+                [path closePath];
+                break;
+            case PathOperationMoveTo:
+                [path moveToPoint:op.location];
+                break;
+            case PathOperationArc:{
+                    //[path addArcWithCenter:op.location radius:op.controlPoint1.x startAngle:0 endAngle:2*M_PI clockwise:YES];
+                    CGFloat startAngle = atan2f(op.controlPoint1.y-op.location.y, op.controlPoint1.x-op.location.x);
+                    CGFloat endAngle = 0;
+                    if (CGPointEqualToPoint(op.controlPoint1, op.controlPoint2)){
+                        endAngle = 2 * M_PI + startAngle;
+                    }
+                    else{
+                        endAngle = atan2f(op.controlPoint2.y - op.location.y, op.controlPoint2.x - op.location.x);
+                    }
+                    [path addArcWithCenter:op.location radius:distanceBetweenPoints(op.controlPoint1, op.location) startAngle:startAngle endAngle:endAngle clockwise:YES];
+                    break;
+                }
+            case PathOperationCurveTo:
+                [path addCurveToPoint:op.location controlPoint1:op.controlPoint1 controlPoint2:op.controlPoint2];
+                break;
+            case PathOperationOval:
+                path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x - op.location.x, op.controlPoint1.y - op.location.y)];
+                break;
+            case PathOperationRect:
+                path = [UIBezierPath bezierPathWithRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x - op.location.x, op.controlPoint1.y - op.location.y)];
+                break;
+            case PathOperationEllipse:
+                path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(op.location.x, op.location.y, op.controlPoint1.x - op.location.x, op.controlPoint1.y - op.location.y)];
+                break;
         }
     }
     self.path = path;
@@ -78,11 +96,6 @@
         default:
             return CGPointZero;
     }
-}
-
--(CGPoint)absolutePointForOperation:(PathOperation *)op {
-    int index = [_pathOperations indexOfObject:op];
-    return [self absolutePointForIndex:index];
 }
 
 -(NSArray *)operationsWithAbsolutePoint {
@@ -103,6 +116,7 @@
             case LocationTypeRelativeToFirst:
                 newOp.location = CGPointMake(newOp.location.x + firstPoint.x, newOp.location.y + firstPoint.y);
                 newOp.controlPoint1 = CGPointMake(newOp.controlPoint1.x + firstPoint.x, newOp.controlPoint1.y + firstPoint.y);
+                newOp.controlPoint2 = CGPointMake(newOp.controlPoint2.x + firstPoint.x, newOp.controlPoint2.y + firstPoint.y);
                 break;
         }
 
@@ -110,6 +124,14 @@
     }
 
     return resultArray;
+}
+
+-(void)setPath:(UIBezierPath *)path {
+    _path = path;
+}
+
+-(UIBezierPath *)path{
+    return _path;
 }
 @end
 
