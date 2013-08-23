@@ -10,13 +10,14 @@
 #import "PathOperation.h"
 
 @class DrawCacheImage;
+@class DrawDocument;
 
 typedef NS_ENUM(NSInteger, DrawMode){
     DrawModeSelect,
     DrawModePen,
     DrawModeLine,
     DrawModePath,
-    DrawModeArc,
+    DrawModeOval,
     DrawModeRect,
     DrawModeEllipse,
     DrawModeInsert,
@@ -25,7 +26,7 @@ typedef NS_ENUM(NSInteger, DrawMode){
 @interface DrawView : UIView
 
 @property (nonatomic, assign) DrawMode mode;
-@property (nonatomic, assign) BOOL antialiasing;
+@property (nonatomic, assign) BOOL antiAliasing;
 @property (nonatomic, assign) BOOL fill;
 @property (nonatomic, assign) BOOL stroke;
 @property (nonatomic, assign) CGFloat lineWidth;
@@ -33,8 +34,12 @@ typedef NS_ENUM(NSInteger, DrawMode){
 @property (nonatomic, strong) UIColor* fillColor;
 @property (nonatomic, assign) CGSize originalSize;
 
+@property (nonatomic, strong) DrawDocument *draw;
+
 @property (nonatomic, copy) void (^fillChangeBlock)(BOOL fill);
 @property (nonatomic, copy) void (^strokeChangeBlock)(BOOL fill);
+
+-(void)closeCurrentShape;
 
 -(void)clear;
 -(void)undo;
@@ -42,7 +47,6 @@ typedef NS_ENUM(NSInteger, DrawMode){
 -(void)refresh;
 -(void)dropCurrentShape;
 -(void)dropCurrentPathOperation;
--(void)rollOperationType;
 -(void)changeCurrentPathOperationType:(PathOperationType)operationType;
 -(void)sendBack:(int)far;
 @end

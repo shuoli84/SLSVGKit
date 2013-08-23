@@ -8,9 +8,9 @@
 #import "DrawView.h"
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "DrawCacheImage.h"
-#import "PathOperation.h"
 #import "DrawShape.h"
 #import "CGUtil.h"
+#import "DrawDocument.h"
 
 typedef void (^UndoBlock)();
 typedef void (^RedoBlock)();
@@ -32,7 +32,6 @@ typedef NS_ENUM(NSInteger, PointType){
 };
 
 @implementation DrawView {
-    NSMutableArray *_shapeArray; //point array holds all points sets
     NSMutableArray *_undoArray; //Array holds blocks which undo
     NSMutableArray *_redoArray; //Array holds blocks which undo
 
@@ -51,19 +50,21 @@ typedef NS_ENUM(NSInteger, PointType){
     if(self){
         _fill = NO;
         _stroke = YES;
+        _antiAliasing = YES;
 
         _bottomDrawShouldStartFromIndex = 0;
 
-        _shapeArray = [NSMutableArray array];
+        _draw = [[DrawDocument alloc]init];
         _undoArray = [NSMutableArray array];
         _redoArray = [NSMutableArray array];
 
-        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"transparent-checkerboard.png"]];
         self.clipsToBounds = YES;
         _bottomImageView = [[UIImageView alloc] initWithFrame:self.bounds];
         _bottomImageView.userInteractionEnabled = YES;
         _bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
         _bottomImageView.layer.magnificationFilter = kCAFilterNearest;
+        _bottomImageView.layer.borderWidth = 1.f;
+        _bottomImageView.layer.borderColor = [UIColor blackColor].CGColor;
         [self addSubview:_bottomImageView];
 
         _middleImageView = [[UIImageView alloc] init];
@@ -212,7 +213,7 @@ typedef NS_ENUM(NSInteger, PointType){
         }
         if(_currentPathOperation == nil){
             _currentShape = nil;
-            for(DrawShape *shape in _shapeArray){
+            for(DrawShape *shape in _draw.shapes){
                 if(pointIsNearPoint([shape.pathOperations[0] location], location)){
                     _currentShape = shape;
                     _currentPathOperation = shape.pathOperations[0];
@@ -407,7 +408,7 @@ typedef NS_ENUM(NSInteger, PointType){
             op.controlPoint1 = CGPointMake(op.location.x + absoluteLocation.x - location.x, op.location.y + absoluteLocation.y - location.y);
         }
     }
-    else if(_mode == DrawModeArc){
+    else if(_mode == DrawModeOval){
         if(state == UIGestureRecognizerStateBegan){
             [self setupCurrentShape];
 
@@ -499,9 +500,9 @@ typedef NS_ENUM(NSInteger, PointType){
 }
 
 -(void)drawImage{
-    int currentShapeIndex = _shapeArray.count - 1;
+    int currentShapeIndex = _draw.shapes.count - 1;
     if(_currentShape != nil){
-        int indexOfCurrent = [_shapeArray indexOfObject:_currentShape];
+        int indexOfCurrent = [_draw.shapes indexOfObject:_currentShape];
         if(indexOfCurrent != NSNotFound){
             currentShapeIndex = indexOfCurrent;
         }
@@ -522,7 +523,7 @@ typedef NS_ENUM(NSInteger, PointType){
         }
 
         for(int index = _bottomDrawShouldStartFromIndex; index < currentShapeIndex; ++index){
-            [self drawShape:_shapeArray[index]];
+            [self drawShape:_draw.shapes[index]];
         }
         _bottomDrawShouldStartFromIndex = currentShapeIndex;
 
@@ -530,9 +531,9 @@ typedef NS_ENUM(NSInteger, PointType){
         UIGraphicsEndImageContext();
     }
 
-    if(_bottomDrawShouldStartFromIndex >= 0 && _bottomDrawShouldStartFromIndex < _shapeArray.count){
+    if(_bottomDrawShouldStartFromIndex >= 0 && _bottomDrawShouldStartFromIndex < _draw.shapes.count){
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0f);
-        [self drawShape:_shapeArray[_bottomDrawShouldStartFromIndex]];
+        [self drawShape:_draw.shapes[_bottomDrawShouldStartFromIndex]];
 
         if(_mode == DrawModeSelect || _mode == DrawModeInsert){
             [[UIColor blueColor] setStroke];
@@ -588,7 +589,7 @@ typedef NS_ENUM(NSInteger, PointType){
             }
 
             [[UIColor colorWithRed:52.f/255.f green:152.f/255.f blue:219.f/255.f alpha:0.7f] setFill];
-            for (DrawShape *shape in _shapeArray){
+            for (DrawShape *shape in _draw.shapes){
                 if(shape.pathOperations.count > 0){
                     PathOperation *op = shape.pathOperations[0];
                     [[UIBezierPath bezierPathWithArcCenter:op.location radius:10 startAngle:0 endAngle:M_PI*2 clockwise:YES] fill];
@@ -599,7 +600,7 @@ typedef NS_ENUM(NSInteger, PointType){
         UIGraphicsEndImageContext();
     }
 
-    if(currentShapeIndex == _shapeArray.count - 1){
+    if(currentShapeIndex == _draw.shapes.count - 1){
         _topImageView.image = nil;
     }
     else{
@@ -607,8 +608,8 @@ typedef NS_ENUM(NSInteger, PointType){
         [[UIColor clearColor] setFill];
         [[UIBezierPath bezierPathWithRect:self.bounds] fill];
 
-        for(int index = currentShapeIndex + 1; index < _shapeArray.count; ++index){
-            [self drawShape:_shapeArray[index]];
+        for(int index = currentShapeIndex + 1; index < _draw.shapes.count; ++index){
+            [self drawShape:_draw.shapes[index]];
         }
         _topImageView.image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -642,20 +643,20 @@ typedef NS_ENUM(NSInteger, PointType){
 -(void)setupCurrentShape{
     DrawShape *shape = [[DrawShape alloc]init];
     shape.lineWidth = _lineWidth;
-    shape.antiAliasing = _antialiasing;
+    shape.antiAliasing = _antiAliasing;
     shape.fill = _fill;
     shape.stroke = _stroke;
     shape.fillColor = _fillColor;
     shape.strokeColor = _strokeColor;
 
-    [_shapeArray addObject:shape];
-    int index = _shapeArray.count - 1;
+    [_draw.shapes addObject:shape];
+    int index = _draw.shapes.count - 1;
     UndoItem *undo = [[UndoItem alloc]init];
     undo.undoBlock = ^{
-        [_shapeArray removeObject:shape];
+        [_draw.shapes removeObject:shape];
     };
     undo.redoBlock = ^{
-        [_shapeArray insertObject:shape atIndex:index];
+        [_draw.shapes insertObject:shape atIndex:index];
     };
     [self addUndoItem:undo];
 
@@ -680,7 +681,7 @@ typedef NS_ENUM(NSInteger, PointType){
 }
 
 -(void)clear{
-    [_shapeArray removeAllObjects];
+    [_draw.shapes removeAllObjects];
     [_undoArray removeAllObjects];
     [_redoArray removeAllObjects];
     _bottomImageView.image = nil;
@@ -736,24 +737,23 @@ typedef NS_ENUM(NSInteger, PointType){
 -(void)dropCurrentShape {
     if(_currentShape){
         DrawShape *shape = _currentShape;
-        int index = [_shapeArray indexOfObject:shape];
-        [_shapeArray removeObjectAtIndex:index];
+        int index = [_draw.shapes indexOfObject:shape];
+        [_draw.shapes removeObjectAtIndex:index];
 
         typeof(self) __weak weakSelf = self;
         UndoItem *undo = [[UndoItem alloc]init];
         undo.undoBlock = ^{
             typeof(weakSelf) __strong strongSelf = weakSelf;
-            [strongSelf->_shapeArray insertObject:shape atIndex:index];
+            [strongSelf->_draw.shapes insertObject:shape atIndex:index];
         };
         undo.redoBlock = ^{
             typeof(weakSelf) __strong strongSelf = weakSelf;
-            [strongSelf->_shapeArray removeObject:shape];
+            [strongSelf->_draw.shapes removeObject:shape];
         };
         [self addUndoItem:undo];
 
-        [self refresh];
-
         _currentShape = nil;
+        [self refresh];
     }
 }
 
@@ -779,16 +779,7 @@ typedef NS_ENUM(NSInteger, PointType){
         };
 
         [self addUndoItem:undo];
-        [self refresh];
         _currentPathOperation = nil;
-    }
-}
-
--(void)rollOperationType{
-    if(_currentPathOperation){
-        PathOperationType type = _currentPathOperation.operationType;
-        [self changeCurrentPathOperationType:(type + 1) % PathOperationClose + 1];
-
         [self refresh];
     }
 }
@@ -811,25 +802,27 @@ typedef NS_ENUM(NSInteger, PointType){
         };
 
         [self addUndoItem:undo];
+
+        [self refresh];
     }
 }
 
 -(void)sendBack:(int)far{
     if(_currentShape){
-        int prevIndex = [_shapeArray indexOfObject:_currentShape];
+        int prevIndex = [_draw.shapes indexOfObject:_currentShape];
         int targetIndex = prevIndex - far;
         if(targetIndex < 0){
             targetIndex = 0;
         }
-        else if(targetIndex >= _shapeArray.count){
-            targetIndex = _shapeArray.count - 1;
+        else if(targetIndex >= _draw.shapes.count){
+            targetIndex = _draw.shapes.count - 1;
         }
         if(prevIndex != targetIndex){
-            [_shapeArray removeObjectAtIndex:prevIndex];
-            [_shapeArray insertObject:_currentShape atIndex:targetIndex];
+            [_draw.shapes removeObjectAtIndex:prevIndex];
+            [_draw.shapes insertObject:_currentShape atIndex:targetIndex];
 
             DrawShape *shape = _currentShape;
-            NSMutableArray *shapeArray = _shapeArray;
+            NSMutableArray *shapeArray = _draw.shapes;
             UndoItem *undo = [[UndoItem alloc]init];
             undo.undoBlock = ^{
                 [shapeArray removeObjectAtIndex:targetIndex];

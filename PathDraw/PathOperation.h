@@ -7,6 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import <JSONModel/JSONModel.h>
 
 typedef NS_ENUM(NSInteger, PathOperationType){
     PathOperationMoveTo,
@@ -26,7 +27,7 @@ typedef NS_ENUM(NSInteger, LocationType){
     LocationTypeRelativeToFirst,
 };
 
-@interface PathOperation : NSObject <NSCopying>
+@interface PathOperation : JSONModel <NSCopying>
 @property (nonatomic, assign) PathOperationType operationType;
 @property (nonatomic, assign) CGPoint location;
 @property (nonatomic, assign) LocationType locationType;
