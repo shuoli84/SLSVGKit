@@ -11,6 +11,7 @@
 
 @interface RecurseFense()
 @property (nonatomic, weak) id object;
+@property (nonatomic, strong) NSMutableSet *lockNames;
 @end
 
 @implementation RecurseFense {
@@ -27,11 +28,25 @@
     return object;
 }
 
-- (id)initWithObject:(id)object functionKey:(const void *)key {
+- (id)initWithObject:(id)object functionKey:(const void *)key{
+    return [self initWithObject:object functionKey:key lockName:@""];
+}
+
+- (id)initWithObject:(id)object functionKey:(const void *)key lockName:(NSString*)lockName{
     self = [super init];
     if(self){
+        if(lockName == nil){
+            lockName = @"";
+        }
+
         if([object associatedValueForKey:key] != nil){
-            return nil;
+            RecurseFense *fense = [object associatedValueForKey:key];
+            if([fense.lockNames containsObject:lockName]){
+                return nil;
+            }
+
+            [fense.lockNames addObject:lockName];
+            return fense;
         }
 
         _key = key;

@@ -63,8 +63,6 @@ typedef NS_ENUM(NSInteger, PointType){
         _bottomImageView.userInteractionEnabled = YES;
         _bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
         _bottomImageView.layer.magnificationFilter = kCAFilterNearest;
-        _bottomImageView.layer.borderWidth = 1.f;
-        _bottomImageView.layer.borderColor = [UIColor blackColor].CGColor;
         [self addSubview:_bottomImageView];
 
         _middleImageView = [[UIImageView alloc] init];

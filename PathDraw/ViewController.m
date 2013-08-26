@@ -68,7 +68,7 @@
             return view;
         }()) $:@[
             [dec(@"tools", F(0, FVA(0), FVP(1), FVAuto)) $:@[
-                dec(@"pen", F(10, FVA(10), 100, 65), [self modeSwitchButton:@"Pen" mode:DrawModePen]),
+                dec(@"pen", F(10, FVA(10), 100, 45), [self modeSwitchButton:@"Pen" mode:DrawModePen]),
                 dec(@"Line", F(FVA(10), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self modeSwitchButton:@"Line" mode:DrawModeLine]),
                 dec(@"Rect", F(10, FVA(10), FVSameAsPrev, FVSameAsPrev), [self modeSwitchButton:@"Rect" mode:DrawModeRect]),
                 dec(@"Circle", F(FVA(10), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self modeSwitchButton:@"Oval" mode:DrawModeOval]),
@@ -113,26 +113,20 @@
                     return button;
                 }()),
 
-                dec(@"selectTitle", F(FVP(0.5), FVSameAsPrev, 50, 30), ^{
-                    UILabel *label = [weakSelf panelSectionTitle:@"Select:"];
-                    label.backgroundColor = [UIColor colorWithWhite:54/255.f alpha:1.f];
-                    return label;
-                }()),
-
-                dec(@"close", F(FVCenter, FVA(10), FVT(20), 30), [self panelButton:@"Close"]),
-                [dec(@"drop", F(FVCenter, FVA(5), FVT(20), 30), [self panelButton:@"Drop"]) process:^(FVDeclaration *declaration) {
+                dec(@"close", F(10, FVA(10), 100, 45), [self panelButton:@"Close"]),
+                [dec(@"drop", F(FVA(10), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self panelButton:@"Drop"]) process:^(FVDeclaration *declaration) {
                     UIButton *button = (UIButton*)declaration.object;
                     [button addEventHandler:^(id sender) {
                         [weakSelf.drawView dropCurrentShape];
                     } forControlEvents:UIControlEventTouchUpInside];
                 }],
-                [dec(@"Push", F(FVCenter, FVA(5), FVT(20), 30), [self panelButton:@"Send back"]) process:^(FVDeclaration *declaration) {
+                [dec(@"Push", F(10, FVA(10), FVSameAsPrev, FVSameAsPrev), [self panelButton:@"Send back"]) process:^(FVDeclaration *declaration) {
                     UIButton *button = (UIButton*)declaration.object;
                     [button addEventHandler:^(id sender) {
                         [weakSelf.drawView sendBack:1];
                     } forControlEvents:UIControlEventTouchUpInside];
                 }],
-                [dec(@"Pull", F(FVCenter, FVA(5), FVT(20), 30), [self panelButton:@"Bring front"]) process:^(FVDeclaration *declaration) {
+                [dec(@"Pull", F(FVA(10), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self panelButton:@"Bring front"]) process:^(FVDeclaration *declaration) {
                     UIButton *button = (UIButton*)declaration.object;
                     [button addEventHandler:^(id sender) {
                         [weakSelf.drawView dropCurrentShape];
@@ -152,21 +146,21 @@
                 dec(@"locationX", F(FVA(20), FVSameAsPrev, 40, 30), [self panelValueButton:@"30.0"]),
                 dec(@"locationY", F(FVA(5), FVSameAsPrev, 40, 30), [self panelValueButton:@"30.0"]),
 
-                dec(@"controlPoint1", F(10, FVA(5), 75, 30), [self panelLabel:@"C1:"]),
+                dec(@"controlPoint1", F(10, FVA(5), 75, 30), [self panelLabel:@"Control 1:"]),
                 dec(@"controlPoint1X", F(FVA(20), FVSameAsPrev, 40, 30), [self panelValueButton:@"30.0"]),
                 dec(@"controlPoint1Y", F(FVA(5), FVSameAsPrev, 40, 30), [self panelValueButton:@"30.0"]),
 
-                dec(@"location", F(10, FVA(5), 75, 30), [self panelLabel:@"C2:"]),
+                dec(@"location", F(10, FVA(5), 75, 30), [self panelLabel:@"Control 2:"]),
                 dec(@"locationX", F(FVA(20), FVSameAsPrev, 40, 30), [self panelValueButton:@"30.0"]),
                 dec(@"locationY", F(FVA(5), FVSameAsPrev, 40, 30), [self panelValueButton:@"30.0"]),
 
-                [dec(@"drop", F(FVCenter, FVA(10), FVT(20), 30), [self panelButton:@"Drop"]) process:^(FVDeclaration *declaration) {
+                [dec(@"drop", F(10, FVA(10), 100, 45), [self panelButton:@"Drop"]) process:^(FVDeclaration *declaration) {
                     UIButton *button = (UIButton*)declaration.object;
                     [button addEventHandler:^(id sender) {
                         [weakSelf.drawView dropCurrentPathOperation];
                     } forControlEvents:UIControlEventTouchUpInside];
                 }],
-                dec(@"append", F(FVCenter, FVA(5), FVT(20), 30), [self modeSwitchButton:@"Append" mode:DrawModeInsert]),
+                dec(@"append", F(FVA(10), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self modeSwitchButton:@"Append" mode:DrawModeInsert]),
             ]],
 
             [dec(@"undoRedo", F(FVCenter, FVA(20), FVT(20), 44)) $:@[
@@ -271,9 +265,13 @@
     ]];
 
     [_rootDeclare setupViewTreeInto:self.view];
+
+    self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:1 target:self selector:@selector(updatePreviewImage) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
 }
 
 -(void)dealloc{
+    [self.timer invalidate];
 }
 
 -(void)updatePreviewImage{

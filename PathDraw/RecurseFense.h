@@ -14,4 +14,5 @@
 +(id)fenseObject;
 
 -(id)initWithObject:(id)object functionKey:(const void *)key;
+-(id)initWithObject:(id)object functionKey:(const void *)key lockName:(NSString*)lockName;
 @end
