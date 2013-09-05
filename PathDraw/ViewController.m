@@ -75,7 +75,7 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
     NSLog(@"View start loading");
 
     //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/breaking-1.svg"];
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/RainbowWing.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Monkey.svg"];
 
     SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
 

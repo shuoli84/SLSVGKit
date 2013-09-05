@@ -1,5 +1,5 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<svg width="752px" height="492px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg width="752px" height="492px" viewBox="0 0 752 492" xmlns="http://www.w3.org/2000/svg" version="1.1">
 	<title>Monkey</title>
 	<g>
 		<path d="M0,0 L0,492 L752,492 L752,0 L752,0 Z M0,0" fill="rgb(204,243,128)"></path>

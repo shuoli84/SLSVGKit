@@ -30,7 +30,7 @@
 }
 
 -(CALayer*)layerForNode:(SLSVGNode*)svgNode{
-    if([svgNode.type isEqualToString:@"linearGradient"]){
+    if([svgNode.type isEqualToString:@"linearGradient"] || [svgNode.type isEqualToString:@"radialGradient"] || [svgNode.type isEqualToString:@"defs"]){
         return nil;
     }else{
         CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
@@ -58,7 +58,7 @@
 
                         SLSVGLinearGradientLayer *gradientLayer = [[SLSVGLinearGradientLayer alloc] init];
                         gradientLayer.anchorPoint = CGPointZero;
-                        gradientLayer.frame = self.bounds;
+                        gradientLayer.frame =[self.svg[@"bounds"] CGRectValue];
                         gradientLayer.p1 = p1;
                         gradientLayer.p2 = p2;
 
@@ -115,7 +115,7 @@
 
                         SLSVGRadialGradientLayer *gradientLayer = [[SLSVGRadialGradientLayer alloc] init];
                         gradientLayer.anchorPoint = CGPointZero;
-                        gradientLayer.frame = self.bounds;
+                        gradientLayer.frame = [self.svg[@"bounds"] CGRectValue];
                         gradientLayer.center = center;
                         gradientLayer.focal = focal;
                         gradientLayer.r = r;
@@ -175,7 +175,14 @@
         UIBezierPath *bezierPath = [[UIBezierPath alloc] init];
 
         if ([svgNode.type isEqualToString:@"svg"]){
-            //0 0 207338 174170
+            CGRect bounds = self.bounds;
+            float width = [svgNode[@"width"] floatValue];
+            float height = [svgNode[@"height"] floatValue];
+
+            if(ABS(width) > 0.0002f && ABS(height) > 0.0002f){
+                bounds = CGRectMake(0, 0, width, height);
+            }
+
             NSString *viewBox = svgNode[@"viewBox"];
             if(viewBox){
                 NSArray *components = [viewBox componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" ,;"]];
@@ -199,8 +206,12 @@
                     resultM = CGAffineTransformConcat(resultM, scaleM);
 
                     [shapeLayer setAffineTransform: resultM];
+
+                    bounds = CGRectMake(0, 0, width, height);
                 }
             }
+
+            svgNode[@"bounds"] = [NSValue valueWithCGRect:bounds];
         }
         else if ([svgNode.type isEqualToString:@"path"]){
             NSArray *commands = [SLSVGNode parseDString:svgNode[@"d"]];
@@ -318,14 +329,14 @@
 
         if(maskIt){
             CAShapeLayer *maskLayer = [CAShapeLayer layer];
-            maskLayer.frame = self.bounds;
+            maskLayer.frame = [self.svg[@"bounds"] CGRectValue];
             maskLayer.path = shapeLayer.path;
             maskLayer.fillColor = [UIColor blackColor].CGColor;
             shapeLayer.mask = maskLayer;
         }
 
         shapeLayer.anchorPoint = CGPointZero; //top left as anchor point
-        shapeLayer.frame = self.bounds;
+        shapeLayer.frame = [self.svg[@"bounds"] CGRectValue];
         shapeLayer.masksToBounds = YES;
 
         CGAffineTransform transformMatrix = shapeLayer.affineTransform;
