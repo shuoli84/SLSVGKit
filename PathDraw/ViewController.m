@@ -83,7 +83,8 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
 
     SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
 
-    SLSVGView *svgView = [[SLSVGView alloc] initWithFrame:CGRectMake(0, 0, 700, 1000)];
+    SLSVGView *svgView = [[SLSVGView alloc] initWithFrame:CGRectMake(100, 200, 600, 600)];
+    svgView.backgroundColor = [UIColor grayColor];
     [self.view addSubview:svgView];
     svgView.svg = node;
     [svgView draw];

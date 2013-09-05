@@ -60,7 +60,7 @@ SPEC_BEGIN(SLSVGSpec)
 
             it(@"should parse d string", ^{
                 SLSVGNode *node = [[SLSVGNode alloc] init];
-                NSArray * array = [node parseDString:@"m 20.523 -30.0 l 50 60.9L20 30 H30 v50 c 20 30 20 30 23 50 C 30 20 20 20 20,20z M 20,30 s20,40,50,60z"];
+                NSArray * array = [SLSVGNode parseDString:@"m 20.523 -30.0 l 50 60.9L20 30 H30 v50 c 20 30 20 30 23 50 C 30 20 20 20 20,20z M 20,30 s20,40,50,60z"];
 
                 NSLog(@"%@", array);
             });
@@ -90,6 +90,28 @@ SPEC_BEGIN(SLSVGSpec)
                 NSLog(@"%@", [node parseColor:@"rgb(100%,100%,100%)"]);
                 NSLog(@"%@", [node parseColor:@"red"]);
                 NSLog(@"%@", [node parseColor:@"greenyellow"]);
+            });
+
+            it(@"should able to calculate the point for cubic path", ^{
+                CGPoint p0 = CGPointMake(120, 160);
+                CGPoint c1 = CGPointMake(35, 200);
+                CGPoint c2 = CGPointMake(220, 260);
+                CGPoint p1 = CGPointMake(220, 40);
+
+                CGPoint t0 = [SLSVGNode pointOnPathStart:p0 control1:c1 control2:c2 end:p1 t:0];
+                NSLog(@"%@", NSStringFromCGPoint(t0));
+
+                CGPoint t1 = [SLSVGNode pointOnPathStart:p0 control1:c1 control2:c2 end:p1 t:1];
+                NSLog(@"%@", NSStringFromCGPoint(t1));
+
+                CGRect bbox = [SLSVGNode bboxForPathStart:p0 control1:c1 control2:c2 end:p1];
+                NSLog(@"BBox: %@", NSStringFromCGRect(bbox));
+
+                bbox = [SLSVGNode bboxForPath:@"M 1, 1 L 3, 3 L 5 1 L 5 10"];
+                NSLog(@"BBox: %@", NSStringFromCGRect(bbox));
+
+                bbox = [SLSVGNode bboxForPath:@"M 1, 1 L 3, 3 C 4,4 3,7 8,9"];
+                NSLog(@"BBox: %@", NSStringFromCGRect(bbox));
             });
         });
     });

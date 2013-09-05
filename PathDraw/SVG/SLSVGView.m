@@ -10,6 +10,7 @@
 #import "SLSVGView.h"
 #import "SLSVGNode.h"
 #import "NSArray+BlocksKit.h"
+#import "UIView+RenderViewImage.h"
 
 
 @implementation SLSVGView {
@@ -84,8 +85,10 @@
                 float y = [components[1] floatValue];
                 float width = [components[2] floatValue];
                 float height = [components[3] floatValue];
+
+                float scale = MIN(self.bounds.size.width/width, self.bounds.size.height/height);
                 CGAffineTransform translateM = CGAffineTransformMakeTranslation(-x, -y);
-                CGAffineTransform scaleM = CGAffineTransformMakeScale(self.bounds.size.width / width, self.bounds.size.width / width);
+                CGAffineTransform scaleM = CGAffineTransformMakeScale(scale, scale);
 
                 CGAffineTransform resultM = CGAffineTransformConcat(shapeLayer.affineTransform, translateM);
                 resultM = CGAffineTransformConcat(resultM, scaleM);
@@ -95,7 +98,7 @@
         }
     }
     else if ([svgNode.type isEqualToString:@"path"]){
-        NSArray *commands = [svgNode parseDString:svgNode[@"d"]];
+        NSArray *commands = [SLSVGNode parseDString:svgNode[@"d"]];
         NSArray *lastCommand;
         CGPoint lastPoint;
 
@@ -192,9 +195,12 @@
     }
 
     shapeLayer.path = bezierPath.CGPath;
+    shapeLayer.anchorPoint = CGPointZero; //top left as anchor point
+    shapeLayer.frame = self.bounds;
+    shapeLayer.masksToBounds = YES;
 
     CGAffineTransform transformMatrix = shapeLayer.affineTransform;
-    transformMatrix = CGAffineTransformConcat(transformMatrix, [svgNode transformMatrix:svgNode[@"transform"]]);
+    transformMatrix = CGAffineTransformConcat([svgNode transformMatrix:svgNode[@"transform"]], transformMatrix);
     [shapeLayer setAffineTransform:transformMatrix];
 
     for(SLSVGNode* child in svgNode.childNodes){

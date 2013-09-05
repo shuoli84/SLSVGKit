@@ -243,7 +243,7 @@ float parseFloat(char const * string, unsigned int index, int* length){
 /**
 * output the array which holds parsed element of absolute positions and types
 */
--(NSArray *)parseDString:(NSString*)d{
++(NSArray *)parseDString:(NSString*)d{
 
     #define SKIPSPACE  while (index < length && isspace(string[index])){ index++; }
     #define SKIPNONDIGITAL while (index < length && !isdigit(string[index]) && string[index] != '-' && string[index] != '+'){index++;}
@@ -259,10 +259,11 @@ float parseFloat(char const * string, unsigned int index, int* length){
         SKIPSPACE
         char c = string[index];
 
-        if(isdigit(c) || c == '-' || c == '.' || c == '+'){
+        /*if(isdigit(c) || c == '-' || c == '.' || c == '+'){
             c = lastCommand;
             index--; //back ward one step
         }
+        */
         if (c == 'm' || c == 'M' || c =='L' || c =='l' || c == 't' || c == 'T'){
             // x y
             index++;
@@ -501,13 +502,13 @@ float parseFloat(char const * string, unsigned int index, int* length){
         }
         else if ([command isEqualToString:@"skewX"]){
             m = CGAffineTransformIdentity;
-            m.b = tanf([params[0] floatValue]);
+            m.c = tanf([params[0] floatValue] / 180.f * (float)M_PI);
         }
         else if ([command isEqualToString:@"skewY"]){
             m = CGAffineTransformIdentity;
-            m.c = tanf([params[0] floatValue]);
+            m.b = tanf([params[0] floatValue] / 180.f * (float)M_PI);
         }
-        matrix = CGAffineTransformConcat(matrix, m);
+        matrix = CGAffineTransformConcat(m, matrix);
     }
 
     return matrix;
@@ -751,5 +752,107 @@ float parseFloat(char const * string, unsigned int index, int* length){
     }
 
     return dictionary;
+}
+
++(CGPoint)pointOnPathStart:(CGPoint)p1 control1:(CGPoint)c1 control2:(CGPoint)c2 end:(CGPoint)p2 t:(float)t{
+    float x = (p1.x) * powf(1-t, 3) + c1.x * 3 * powf(1-t, 2) * t + c2.x * 3 * (1-t) * powf(t, 2) + p2.x * powf(t, 3);
+    float y = (p1.y) * powf(1-t, 3) + c1.y * 3 * powf(1-t, 2) * t + c2.y * 3 * (1-t) * powf(t, 2) + p2.y * powf(t, 3);
+
+    return CGPointMake(x, y);
+}
+
+/**
+* x' = 3 * (-a + 3b - 3c +d)t*t + 2 * (3a - 6b + 3c)t + (-3a + 3b)
+*/
++(CGPoint)derivativeOnPathStart:(CGPoint)p1 control1:(CGPoint)c1 control2:(CGPoint)c2 end:(CGPoint)p2 t:(float)t{
+    float xd = 3 * (-p1.x + 3 * c1.x - 3 * c2.x + p2.x) * t * t + 2 * (3 * p1.x - 6 * c1.x + 3 * c2.x) * t + (-3 * p1.x + 3 * c1.x);
+    float yd = 3 * (-p1.y + 3 * c1.y - 3 * c2.y + p2.y) * t * t + 2 * (3 * p1.y - 6 * c1.y + 3 * c2.y) * t + (-3 * p1.y + 3 * c1.y);
+
+    return CGPointMake(xd, yd);
+}
+
+/**
+* 6 * ( -a + 3b - 3c +d ) * t + 2 * (3a - 6b + 3c)
+*/
++(CGPoint)deriveOfDeriveOnPathStart:(CGPoint)p1 control1:(CGPoint)c1 control2:(CGPoint)c2 end:(CGPoint)p2 t:(float)t{
+    float xdd = 6 * (-p1.x + 3 * c1.x - 3 * c2.x + p2.x) * t + 2 * ( 3 * p1.x - 6 * p1.x + 3 * c2.x);
+    float ydd = 6 * (-p1.y + 3 * c1.y - 3 * c2.y + p2.y) * t + 2 * ( 3 * p1.y - 6 * p1.y + 3 * c2.y);
+    return CGPointMake(xdd, ydd);
+}
+
++(BOOL)rootForA:(float)a b:(float)b c:(float)c r1:(float*)r1 r2:(float*)r2{
+    float q = b * b - 4 * a * c;
+    if(q < 0){
+        return NO;
+    }
+
+    *r1 = 0.5 * (-b + sqrtf(q) ) / a;
+    *r2 = 0.5 * (-b - sqrtf(q) ) / a;
+    return YES;
+}
+
++(CGRect)bboxForPathStart:(CGPoint)p1 control1:(CGPoint)c1 control2:(CGPoint)c2 end:(CGPoint)p2{
+    float ax = 3 * (-p1.x + 3 * c1.x - 3 * c2.x + p2.x);
+    float bx = 2 * (3 * p1.x - 6 * c1.x + 3 * c2.x);
+    float cx = (-3 * p1.x + 3 * c1.x);
+    float t1 = 0, t2 = 0;
+    [SLSVGNode rootForA:ax  b:bx c:cx r1:&t1 r2:&t2]; //if no root, 0 means start point
+    CGPoint p3 = [SLSVGNode pointOnPathStart:p1 control1:c1 control2:c2 end:p2 t:t1];
+    CGPoint p4 = [SLSVGNode pointOnPathStart:p1 control1:c1 control2:c2 end:p2 t:t2];
+
+    float minX, maxX;
+    minX = MIN(MIN(MIN(p1.x, p2.x), p3.x), p4.x);
+    maxX = MAX(MAX(MAX(p1.x, p2.x), p3.x), p4.x);
+
+    float ay = 3 * (-p1.y + 3 * c1.y - 3 * c2.y + p2.y);
+    float by = 2 * (3 * p1.y - 6 * c1.y + 3 * c2.y);
+    float cy = (-3 * p1.y + 3 * c1.y);
+    [SLSVGNode rootForA:ay  b:by c:cy r1:&t1 r2:&t2]; //if no root, 0 means start point
+    p3 = [SLSVGNode pointOnPathStart:p1 control1:c1 control2:c2 end:p2 t:t1];
+    p4 = [SLSVGNode pointOnPathStart:p1 control1:c1 control2:c2 end:p2 t:t2];
+
+    float minY, maxY;
+    minY = MIN(MIN(MIN(p1.y, p2.y), p3.y), p4.y);
+    maxY = MAX(MAX(MAX(p1.y, p2.y), p3.y), p4.y);
+
+    return CGRectMake(minX, minY, maxX - minX, maxY - minY);
+}
+
++(CGRect)bboxForPath:(NSString *)d{
+    NSArray* commands = [SLSVGNode parseDString:d];
+    CGPoint currentPoint = CGPointZero;
+    CGRect bbox = CGRectNull;
+    for(NSArray *command in commands){
+        NSString* name = command[0];
+        NSArray *param = command.count > 1 ? command[1] : nil;
+        if([name isEqualToString:@"M"]){
+            currentPoint = CGPointMake([param[0] floatValue], [param[1] floatValue]);
+        }
+        else if([name isEqualToString:@"L"]){
+            CGPoint end = CGPointMake([param[0] floatValue], [param[1] floatValue]);
+            float x = MIN(currentPoint.x, end.x);
+            float y = MIN(currentPoint.y, end.y);
+            float w = MAX(currentPoint.x, end.x) - x;
+            float h = MAX(currentPoint.y, end.y) - y;
+            CGRect r = CGRectMake( x, y, w, h);
+            bbox = CGRectUnion(bbox, r);
+
+            currentPoint = end;
+        }
+        else if([name isEqualToString:@"C"]){
+            CGPoint end =  CGPointMake([param[4] floatValue], [param[5] floatValue]);
+            CGPoint c1 =  CGPointMake([param[0] floatValue], [param[1] floatValue]);
+            CGPoint c2 =  CGPointMake([param[2] floatValue], [param[3] floatValue]);
+            CGRect r = [SLSVGNode bboxForPathStart:currentPoint control1:c1 control2:c2 end:end];
+            bbox = CGRectUnion( bbox, r);
+
+            currentPoint = end;
+        }
+        else{
+            NSLog(@"name not handled yet");
+        }
+    }
+
+    return bbox;
 }
 @end
