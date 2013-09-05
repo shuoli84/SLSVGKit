@@ -29,6 +29,8 @@
 -(BOOL) hasChildNodes;
 -(SLSVGNode *)cloneNode:(BOOL)deep;
 
+-(SLSVGNode *)getNodeById:(NSString*)id;
+
 -(NSString*)attribute:(NSString*)name;
 -(void)setAttribute:(NSString *)name value:(NSString*)value;
 -(void)removeAttribute:(NSString*)name;

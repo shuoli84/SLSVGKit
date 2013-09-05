@@ -38,17 +38,11 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
 
     }
     else {
-        if([element.tag isEqualToString:@"g"]){
-            n.type = @"g";
-            [parentNode appendChild:n];
-            [element iterate:@"*" usingBlock:^(RXMLElement *element) {
-                createSVGNodeFromXMLElement(element, n);
-            }];
-        }
-        else{
-            n.type = element.tag;
-            [parentNode appendChild:n];
-        }
+        n.type = element.tag;
+        [parentNode appendChild:n];
+        [element iterate:@"*" usingBlock:^(RXMLElement *element) {
+            createSVGNodeFromXMLElement(element, n);
+        }];
 
         for (NSString *attribute in element.attributeNames){
             n[attribute] = [element attribute:attribute];
@@ -78,8 +72,10 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Lion.svg"];
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Lion.svg"];
+    NSLog(@"View start loading");
+
+    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/breaking-1.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/RainbowWing.svg"];
 
     SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
 
@@ -88,6 +84,13 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
     [self.view addSubview:svgView];
     svgView.svg = node;
     [svgView draw];
+
+    /*
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:10];
+    svgView.transform = CGAffineTransformMakeScale(5, 5);
+    [UIView commitAnimations];
+    */
 /*
     _interlockButtonGroup = [NSMutableArray array];
 

@@ -10,7 +10,6 @@
 <defs>
 </defs>
 <rect fill="#FFFFFF" width="500" height="500"/>
-<rect fill="#FFFFFF" width="500" height="500"/>
 <text transform="matrix(1 0 0 1 31.4707 40.4453)"><tspan x="0" y="0" fill="#444444" font-family="'MyriadPro-Bold'" font-size="12">SVG Parser:</tspan><tspan x="61.812" y="0" fill="#444444" font-family="'MyriadPro-Regular'" font-size="12"> Gradients</tspan></text>
 <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="130.4951" y1="457.7842" x2="130.4951" y2="396.3105">
 	<stop  offset="0" style="stop-color:#E5802A"/>

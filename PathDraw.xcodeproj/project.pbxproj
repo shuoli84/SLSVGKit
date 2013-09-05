@@ -34,9 +34,11 @@
 		BE48E8F44E5F14FEEF98B5F7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48EAB4A8E62E024D7BD877 /* CoreGraphics.framework */; };
 		BE48E909AC803D92FA64AEB2 /* DrawShape.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EF631035A6B0515D3C4E /* DrawShape.m */; };
 		BE48E93442EED935BA3F7FE1 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE48EF85593EC913FB94023B /* MainStoryboard_iPhone.storyboard */; };
+		BE48E95951693E93E0FD0876 /* SLSVGRadialGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E54A1934F6971EFDD8B3 /* SLSVGRadialGradientLayer.m */; };
 		BE48EAE82E8D6090EAB65661 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48ED5FCF99E1CD8293FB62 /* main.m */; };
 		BE48EC634305B406139BD5A5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE48E1F6B68E166AD45F8341 /* InfoPlist.strings */; };
 		BE48ED06D50106B230536370 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE48EA65FF42F14548385447 /* MainStoryboard_iPad.storyboard */; };
+		BE48ED5F78DC45D41511C664 /* SLSVGLinearGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EE1D019872BD5E97FD1C /* SLSVGLinearGradientLayer.m */; };
 		BE48EE5F81B53383DF0CA652 /* JSONValueTransformer+SLSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EAF50D07A4434747CC7A /* JSONValueTransformer+SLSerializer.m */; };
 		BE48EE73CC8D17068C5CEDCB /* SLSVG.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EDEC9C157C6AAA2F434A /* SLSVG.m */; };
 		BE48EE7D2AADF423318E24F7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EC0E2E74AF9896EF069A /* AppDelegate.m */; };
@@ -65,6 +67,7 @@
 		9C5535F117D06727003B6872 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		9C7B017717C5CAB5001548BD /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		BE48E0014F7E82D63F90E8E2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		BE48E0517F46469921E62A7D /* SLSVGRadialGradientLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVGRadialGradientLayer.h; sourceTree = "<group>"; };
 		BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE48E1527860B2D6BC0569F6 /* PathOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathOperation.h; sourceTree = "<group>"; };
 		BE48E1D7978A3BE533E866B5 /* JSONValueTransformer+SLSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JSONValueTransformer+SLSerializer.h"; sourceTree = "<group>"; };
@@ -80,6 +83,7 @@
 		BE48E414FD0123DB8F46655B /* DrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawDocument.h; sourceTree = "<group>"; };
 		BE48E45C6FD14D391DB5D94B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BE48E4FC34EA054A2ED32259 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		BE48E54A1934F6971EFDD8B3 /* SLSVGRadialGradientLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVGRadialGradientLayer.m; sourceTree = "<group>"; };
 		BE48E5B87A7FA082CD57A36B /* SLSVGNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVGNode.m; sourceTree = "<group>"; };
 		BE48E5D64665F15C5FD93EEE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		BE48E5DD631B64932F38A7B3 /* PathDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PathDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,9 +107,11 @@
 		BE48EDBC8EFCECB1876F3086 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		BE48EDEC68B28EC1EC7D0E44 /* DrawView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawView.m; sourceTree = "<group>"; };
 		BE48EDEC9C157C6AAA2F434A /* SLSVG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVG.m; sourceTree = "<group>"; };
+		BE48EE1D019872BD5E97FD1C /* SLSVGLinearGradientLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVGLinearGradientLayer.m; sourceTree = "<group>"; };
 		BE48EE328AAD9471DC98873D /* SLSVGNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVGNode.h; sourceTree = "<group>"; };
 		BE48EE5E376D79CDB47E2DAD /* PathDrawTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PathDrawTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48EE626D69F0243EA24E4B /* PathDrawTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = "PathDrawTests-Info.plist"; sourceTree = "<group>"; };
+		BE48EEDCA1EAE09D8E6A62CF /* SLSVGLinearGradientLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVGLinearGradientLayer.h; sourceTree = "<group>"; };
 		BE48EF27C7A4E9CFF98A723E /* SLSVGView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVGView.m; sourceTree = "<group>"; };
 		BE48EF631035A6B0515D3C4E /* DrawShape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawShape.m; sourceTree = "<group>"; };
 		BE48EF9DF4D16EA7B0D8ED63 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -249,6 +255,10 @@
 				BE48E2F1AD4E9AE2DE1B9644 /* SLSVG.h */,
 				BE48EF27C7A4E9CFF98A723E /* SLSVGView.m */,
 				BE48EC41E33FD52DC48D5BAB /* SLSVGView.h */,
+				BE48EE1D019872BD5E97FD1C /* SLSVGLinearGradientLayer.m */,
+				BE48EEDCA1EAE09D8E6A62CF /* SLSVGLinearGradientLayer.h */,
+				BE48E54A1934F6971EFDD8B3 /* SLSVGRadialGradientLayer.m */,
+				BE48E0517F46469921E62A7D /* SLSVGRadialGradientLayer.h */,
 			);
 			path = SVG;
 			sourceTree = "<group>";
@@ -452,6 +462,8 @@
 				BE48E718A59ACBB1C88D343B /* SLSVGNode.m in Sources */,
 				BE48EE73CC8D17068C5CEDCB /* SLSVG.m in Sources */,
 				BE48E78C6CE35429C8ADFA52 /* SLSVGView.m in Sources */,
+				BE48ED5F78DC45D41511C664 /* SLSVGLinearGradientLayer.m in Sources */,
+				BE48E95951693E93E0FD0876 /* SLSVGRadialGradientLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

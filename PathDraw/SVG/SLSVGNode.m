@@ -77,6 +77,32 @@
     return self.childNodes.count > 0;
 }
 
+-(NSString*)id{
+    return [self attribute:@"id"];
+}
+
+-(void)setId:(NSString*)id{
+    [self setAttribute:@"id" value:id];
+}
+
+-(SLSVGNode *)getNodeById:(NSString*)id{
+    SLSVGNode* result;
+    for(SLSVGNode *child in self.childNodes){
+        if([child.id isEqualToString:id]){
+            result = child;
+            break;
+        }
+        else{
+            result = [child getNodeById:id];
+            if(result){
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
 -(SLSVGNode *)firstChild {
     if(self.childNodes.count > 0){
         return self.childNodes[0];
