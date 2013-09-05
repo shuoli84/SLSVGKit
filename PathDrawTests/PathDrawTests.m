@@ -1,71 +1,96 @@
 #import "Kiwi.h"
-#import "RecurseFense.h"
-#import "PathOperation.h"
-#import "DrawShape.h"
-#import "DrawDocument.h"
+#import "SLSVGNode.h"
+#import "SLSVG.h"
 
-typedef void (^Block)();
+SPEC_BEGIN(SLSVGSpec)
 
-SPEC_BEGIN(RecurseFenseSpec)
+    describe(@"SVGDom", ^{
+        context(@"Basic Operation DOM", ^{
+            /*
+            it(@"try the api first", ^{
+                SLSVG* svg = [SLSVG svgWithRect:@"10, 50, 320, 200"];
+                svg = [SVG svgWithRect:CGRectMake(10, 50, 320, 200)];
+                SVGView *svgView = [SVGView viewWithSVG:svg]; //From now on, all model change will indicate view update. Or will trigger the related Layer to update
+                [[svg rect:CGRectMake(0, 0, 20, 50)] attr:{@"stroke":@"#000"}];
+                [[svg path:@"M10 10L90 90"] attr:{@"fill":@"#FFF"}];
+                SVGCircle *circle = [svg circle:@"30 50 20"];
+                circle.cx = 50;
+                circle.cy = 60;
+                Animation *animation = [circle animate:{@"cx":@30} duration:3.f easing:@"cubic-bezier(.2 .3 .7 -.3)" completion:^{}];
+                animation.attr;
+                [svg setViewBoxWithRect:CGRectMake(0, 0, 100, 100) fit:YES];
 
-    describe(@"RecurseFense", ^{
-        context(@"init", ^{
-            it(@"should prevent recurse call", ^{
-                int __block count = 0;
-                NSObject *fenseObject = [[NSObject alloc]init];
+                CGRect box = [svg pathBBox:path];
+            });
+            */
 
-                __block void (^block1)() = ^(){
-                    static char key;
-                    RecurseFense *fense = [[RecurseFense alloc] initWithObject:fenseObject functionKey:&key];
-                    if(fense){
-                        NSLog(@"called");
-                        count++;
-                        block1();
-                    }
-                    else{
-                        block1 = nil;
-                    }
-                };
+            it(@"dom", ^{
+                SLSVGNode *path = [[SLSVGNode alloc]init];
+                path.type = @"path";
+                [path setAttribute:@"d" value:@"m 20 30 m 20,30 l 50 200 l 100 200 z"];
 
-                block1();
-                [[theValue(count) should] equal:theValue(1)];
+                SLSVGNode *rect = [[SLSVGNode alloc]init];
+                rect.type = @"rect";
+                [rect setAttribute:@"x" value:@"20"];
+                [rect setAttribute:@"y" value:@"30"];
+                [rect setAttribute:@"width" value:@"300"];
+                [rect setAttribute:@"height" value:@"150"];
+
+                [rect attr:@{
+                    @"x":@"20",
+                    @"y":@"30",
+                    @"width":@"300",
+                    @"height":@"150",
+                }];
+
+                rect[@"x"]=@"20";
+                rect[@"y"]=@"40";
+
+                SLSVGNode *g = [[SLSVGNode alloc]init];
+                g.type = @"g";
+                [g appendChild:rect];
+
+                g[@"fill"] = @"rgb(20,30,40)";
+                g[@"stroke"] = @"#FFF";
+
+                [g path:@"m 20 30 l 50 200"];
+          //      [g rect:CGRectMake(0, 0, 100, 200)];
+          //      [g circle:CGPointMake(0, 0) radius:50];
+            });
+
+            it(@"should parse d string", ^{
+                SLSVGNode *node = [[SLSVGNode alloc] init];
+                NSArray * array = [node parseDString:@"m 20.523 -30.0 l 50 60.9L20 30 H30 v50 c 20 30 20 30 23 50 C 30 20 20 20 20,20z M 20,30 s20,40,50,60z"];
+
+                NSLog(@"%@", array);
+            });
+
+           it(@"should parse transform", ^{
+               SLSVGNode *node = [[SLSVGNode alloc]init];
+               node[@"transform"] = @"translate(-10, -20) scale(2) rotate(45) translate(5,10) skewX(30) skewY(20) matrix( 1, 2, 3, 4, 5, 6)";
+               NSArray *transforms = [node parseTransform:node[@"transform"]];
+
+               NSLog(@"%@", transforms);
+
+               CGAffineTransform transform = [node transformMatrix:@"translate(-10, 20) scale(2)"];
+               NSLog(@"%@", NSStringFromCGAffineTransform(transform));
+
+
+
+               CGAffineTransform transform2 = [node transformMatrix:@"scale(.5) translate(29,30)"];
+               NSLog(@"%@", NSStringFromCGAffineTransform(transform));
+           });
+
+            it(@"should able to parse color", ^{
+                SLSVGNode *node = [[SLSVGNode alloc]init];
+                NSLog(@"%@", [node parseColor:@"#FFF"]);
+                NSLog(@"%@", [node parseColor:@"#fff"]);
+                NSLog(@"%@", [node parseColor:@"#feffff"]);
+                NSLog(@"%@", [node parseColor:@"rgb(0,0,0)"]);
+                NSLog(@"%@", [node parseColor:@"rgb(100%,100%,100%)"]);
+                NSLog(@"%@", [node parseColor:@"red"]);
+                NSLog(@"%@", [node parseColor:@"greenyellow"]);
             });
         });
     });
-
-SPEC_END
-
-SPEC_BEGIN(SerializationSpec)
-
-    describe(@"PathOperationSerialization", ^{
-        PathOperation *op = [[PathOperation alloc] init];
-        op.location = CGPointZero;
-        op.operationType = PathOperationLineTo;
-
-        DrawShape * shape = [[DrawShape alloc] init];
-        shape.antiAliasing = YES;
-        shape.fill = YES;
-        shape.lineWidth = 2.0f;
-        [shape appendOperation:op];
-
-        DrawDocument* document = [[DrawDocument alloc] init];
-        [document.shapes addObject:shape];
-
-        it(@"should able to serialize PathOperation", ^{
-            NSString *json = [op toJSONString];
-            NSLog(@"%@", json);
-        });
-
-        it(@"should able to serialize shape", ^{
-
-            NSString *json = [shape toJSONString];
-            NSLog(@"%@", json);
-        });
-
-        it(@"should able to serialize draw", ^{
-            NSString *json = [document toJSONString];
-            NSLog(@"%@", json);
-        });
-    });
-
 SPEC_END

@@ -5,9 +5,9 @@
 // To change the template use AppCode | Preferences | File Templates.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "DrawView.h"
 #import "UIGestureRecognizer+BlocksKit.h"
-#import "DrawCacheImage.h"
 #import "DrawShape.h"
 #import "CGUtil.h"
 #import "DrawDocument.h"
@@ -50,7 +50,6 @@ typedef NS_ENUM(NSInteger, PointType){
     if(self){
         _fill = NO;
         _stroke = YES;
-        _antiAliasing = YES;
 
         _bottomDrawShouldStartFromIndex = 0;
 
@@ -93,7 +92,7 @@ typedef NS_ENUM(NSInteger, PointType){
         [_bottomImageView addGestureRecognizer:panGestureRecognizer];
 
         UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-            [weakSelf pinch:sender state:state location:location];
+            [weakSelf pinch:(UIPinchGestureRecognizer *)sender state:state location:location];
         }];
         [self addGestureRecognizer:pinchGestureRecognizer];
     }
@@ -616,10 +615,11 @@ typedef NS_ENUM(NSInteger, PointType){
 
 -(void)drawShape:(DrawShape*)shape{
     [shape generatePath];
+    CGContextRef context = UIGraphicsGetCurrentContext();
     UIBezierPath *path = shape.path;
-    CGContextSetAllowsAntialiasing(UIGraphicsGetCurrentContext(), shape.antiAliasing);
+    CGContextSetAllowsAntialiasing(context, shape.antiAliasing);
     if(shape.antiAliasing){
-        CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+        CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     }
     if (shape.stroke){
         [shape.strokeColor setStroke];
@@ -633,7 +633,10 @@ typedef NS_ENUM(NSInteger, PointType){
         if(op.operationType == PathOperationClose || op.operationType == PathOperationRect || op.operationType == PathOperationArc ||
             op.operationType == PathOperationEllipse){
             [shape.fillColor setFill];
-            [path fill];
+            CGContextSaveGState(context);
+            [path addClip];
+            CGContextFillRect(context, CGRectMake(0, 0, 500, 500));
+            CGContextRestoreGState(context);
         }
     }
 }
@@ -641,7 +644,6 @@ typedef NS_ENUM(NSInteger, PointType){
 -(void)setupCurrentShape{
     DrawShape *shape = [[DrawShape alloc]init];
     shape.lineWidth = _lineWidth;
-    shape.antiAliasing = _antiAliasing;
     shape.fill = _fill;
     shape.stroke = _stroke;
     shape.fillColor = _fillColor;

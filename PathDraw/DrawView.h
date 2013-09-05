@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "PathOperation.h"
 
-@class DrawCacheImage;
 @class DrawDocument;
 
 typedef NS_ENUM(NSInteger, DrawMode){
@@ -26,7 +25,6 @@ typedef NS_ENUM(NSInteger, DrawMode){
 @interface DrawView : UIView
 
 @property (nonatomic, assign) DrawMode mode;
-@property (nonatomic, assign) BOOL antiAliasing;
 @property (nonatomic, assign) BOOL fill;
 @property (nonatomic, assign) BOOL stroke;
 @property (nonatomic, assign) CGFloat lineWidth;
@@ -38,8 +36,6 @@ typedef NS_ENUM(NSInteger, DrawMode){
 
 @property (nonatomic, copy) void (^fillChangeBlock)(BOOL fill);
 @property (nonatomic, copy) void (^strokeChangeBlock)(BOOL fill);
-
--(void)closeCurrentShape;
 
 -(void)clear;
 -(void)undo;

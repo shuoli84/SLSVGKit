@@ -4,6 +4,7 @@ pod 'SLFlexibleView', :podspec => "https://raw.github.com/shuoli84/FlexibleView2
 pod 'MGImageUtilities'
 pod 'JSONModel'
 pod 'StandardPaths'
+pod 'RaptureXML'
 
 target :PathDrawTests, :exclusive => true do
     pod 'Kiwi'

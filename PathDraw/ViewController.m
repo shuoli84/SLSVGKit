@@ -16,6 +16,52 @@
 #import "NSObject+AssociatedObjects.h"
 #import "UIView+RenderViewImage.h"
 #import "UIImage+ProportionalFill.h"
+#import "SLSVGView.h"
+#import "SLSVGNode.h"
+
+#import "RXMLElement.h"
+
+SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNode){
+    SLSVGNode *n = [[SLSVGNode alloc]init];
+    if([element.tag isEqualToString:@"svg"]){
+        n.type = @"svg";
+        [parentNode appendChild:n];
+        for (NSString *attribute in element.attributeNames){
+            n[attribute] = [element attribute:attribute];
+        }
+
+        [element iterate:@"*" usingBlock:^(RXMLElement *element) {
+            createSVGNodeFromXMLElement(element, n);
+        }];
+    }
+    else if([element.tag isEqualToString:@"style"]){
+
+    }
+    else {
+        if([element.tag isEqualToString:@"g"]){
+            n.type = @"g";
+            [parentNode appendChild:n];
+            [element iterate:@"*" usingBlock:^(RXMLElement *element) {
+                createSVGNodeFromXMLElement(element, n);
+            }];
+        }
+        else{
+            n.type = element.tag;
+            [parentNode appendChild:n];
+        }
+
+        for (NSString *attribute in element.attributeNames){
+            n[attribute] = [element attribute:attribute];
+        }
+
+        if(n[@"style"]){
+            [n attr:[n parseStyle:n[@"style"]]];
+            [n removeAttribute:@"style"];
+        }
+    }
+
+    return n;
+}
 
 @interface ViewController ()
 @property (nonatomic, strong) FVDeclaration *rootDeclare;
@@ -31,6 +77,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Lion.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Lion.svg"];
+
+    SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
+
+    SLSVGView *svgView = [[SLSVGView alloc] initWithFrame:CGRectMake(0, 0, 700, 1000)];
+    [self.view addSubview:svgView];
+    svgView.svg = node;
+    [svgView draw];
+/*
     _interlockButtonGroup = [NSMutableArray array];
 
     typeof(self) __weak weakSelf = self;
@@ -52,7 +109,6 @@
         } forControlEvents:UIControlEventTouchUpInside];
         return button;
     };
-
 
     _rootDeclare = [dec(@"root") $:@[
         dec(@"backgroundView", CGRectMake(0, 0, FVP(1), FVP(1)), ^{
@@ -136,9 +192,10 @@
 
             dec(@"point", F(0, FVA(10), FVP(1), 35), [self panelSectionTitle:@"Point"]),
             [dec(@"pointPanel", F(0, FVA(0), FVP(1), FVAuto)) $:@[
-                dec(@"moveTo", F(10, FVA(10), 60, 30), [self pointTypeChangeButton:@"Move to" type:PathOperationMoveTo]),
-                dec(@"lineTo", F(FVA(5), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self pointTypeChangeButton:@"Line to" type:PathOperationLineTo]),
-                dec(@"arc", F(FVA(5), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self pointTypeChangeButton:@"Arc" type:PathOperationArc]),
+                dec(@"moveTo", F(10, FVA(10), 50, 30), [self pointTypeChangeButton:@"Move" type:PathOperationMoveTo]),
+                dec(@"lineTo", F(FVA(5), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self pointTypeChangeButton:@"Line" type:PathOperationLineTo]),
+                dec(@"arc", F(FVA(5), FVSameAsPrev, 45, FVSameAsPrev), [self pointTypeChangeButton:@"Arc" type:PathOperationArc]),
+                dec(@"close", F(FVA(5), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self pointTypeChangeButton:@"Close" type:PathOperationClose]),
                 dec(@"quadCurve", F(10, FVA(5), 100, 30), [self pointTypeChangeButton:@"Quad Curve" type:PathOperationQuadCurveTo]),
                 dec(@"curve", F(FVA(5), FVSameAsPrev, FVSameAsPrev, FVSameAsPrev), [self pointTypeChangeButton:@"Curve" type:PathOperationCurveTo]),
 
@@ -265,9 +322,7 @@
     ]];
 
     [_rootDeclare setupViewTreeInto:self.view];
-
-    self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:1 target:self selector:@selector(updatePreviewImage) userInfo:nil repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+    */
 }
 
 -(void)dealloc{
@@ -353,11 +408,12 @@
 }
 
 -(void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
+    /*[super viewWillLayoutSubviews];
 
     [_rootDeclare resetLayout];
     _rootDeclare.unExpandedFrame = self.view.bounds;
     [_rootDeclare updateViewFrame];
+    */
 }
 
 - (void)didReceiveMemoryWarning

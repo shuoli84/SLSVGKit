@@ -9,18 +9,18 @@
 /* Begin PBXBuildFile section */
 		7F3B00C485914C23B4C078A0 /* libPods-PathDrawTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEFFB77D6BD49A4B70AE85A /* libPods-PathDrawTests.a */; };
 		9C0629DB17B24A5E008A9C46 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0629DA17B24A5E008A9C46 /* QuartzCore.framework */; };
+		9C5535F217D06727003B6872 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C5535F117D06727003B6872 /* libxml2.dylib */; };
 		9C7B017417C5C619001548BD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48EAB4A8E62E024D7BD877 /* CoreGraphics.framework */; };
 		9C7B017817C5CAB5001548BD /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C7B017717C5CAB5001548BD /* CoreImage.framework */; };
 		9C7B017917C5CABC001548BD /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C7B017717C5CAB5001548BD /* CoreImage.framework */; };
 		BE48E00E6048FBA187DD3D4E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE48EA6D3E9018C051F4A3E1 /* InfoPlist.strings */; };
-		BE48E01C56F643C4E4776AE1 /* DrawCacheImage.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E8F0A2653A6111303BE6 /* DrawCacheImage.m */; };
 		BE48E03BCFF55C4280038190 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */; };
 		BE48E0D6FD75416C5062DD9A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */; };
 		BE48E0F768D23189F7C0CCF4 /* transparent-checkerboard.png in Resources */ = {isa = PBXBuildFile; fileRef = BE48ED594E37FB611DFBDBF9 /* transparent-checkerboard.png */; };
 		BE48E1DB2AA06AD98D22CD4F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = BE48E5D64665F15C5FD93EEE /* Default.png */; };
+		BE48E1F145818D78AD268DC2 /* samples in Resources */ = {isa = PBXBuildFile; fileRef = BE48ED14A7D0076434B839C6 /* samples */; };
 		BE48E312F30C36341D1929B3 /* DrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E69F905B8E762EF858EA /* DrawDocument.m */; };
 		BE48E3B8CF9BC5CEBE192FD1 /* DrawView.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EDEC68B28EC1EC7D0E44 /* DrawView.m */; };
-		BE48E3C096E186119BD80433 /* RecurseFense.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E56F47AA21CDC92AD39E /* RecurseFense.m */; };
 		BE48E4A20EC23B6AB45BD1DF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E0014F7E82D63F90E8E2 /* ViewController.m */; };
 		BE48E52C176CCEC49C9457C8 /* UIView+RenderViewImage.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EC4DF72207C0EAAAE8F2 /* UIView+RenderViewImage.m */; };
 		BE48E5732F2AFAF2A3C65B5C /* CGUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E332D3DA04A9D0658153 /* CGUtil.m */; };
@@ -28,6 +28,8 @@
 		BE48E648F89AB3C52B6DC3C2 /* PathDrawTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E86EEC2AC15966193DF6 /* PathDrawTests.m */; };
 		BE48E6984FEBF7808D325E8B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48EF9DF4D16EA7B0D8ED63 /* Foundation.framework */; };
 		BE48E6E0BF37A13F0745E1FA /* transparent-checkerboard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE48E8C201024C03BDF3E19B /* transparent-checkerboard@2x.png */; };
+		BE48E718A59ACBB1C88D343B /* SLSVGNode.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48E5B87A7FA082CD57A36B /* SLSVGNode.m */; };
+		BE48E78C6CE35429C8ADFA52 /* SLSVGView.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EF27C7A4E9CFF98A723E /* SLSVGView.m */; };
 		BE48E8999067CFCFE2118779 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE48EFF825A32EAEC142DCF6 /* Default@2x.png */; };
 		BE48E8F44E5F14FEEF98B5F7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48EAB4A8E62E024D7BD877 /* CoreGraphics.framework */; };
 		BE48E909AC803D92FA64AEB2 /* DrawShape.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EF631035A6B0515D3C4E /* DrawShape.m */; };
@@ -36,6 +38,7 @@
 		BE48EC634305B406139BD5A5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE48E1F6B68E166AD45F8341 /* InfoPlist.strings */; };
 		BE48ED06D50106B230536370 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE48EA65FF42F14548385447 /* MainStoryboard_iPad.storyboard */; };
 		BE48EE5F81B53383DF0CA652 /* JSONValueTransformer+SLSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EAF50D07A4434747CC7A /* JSONValueTransformer+SLSerializer.m */; };
+		BE48EE73CC8D17068C5CEDCB /* SLSVG.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EDEC9C157C6AAA2F434A /* SLSVG.m */; };
 		BE48EE7D2AADF423318E24F7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE48EC0E2E74AF9896EF069A /* AppDelegate.m */; };
 		BE48EE88F2C693D8AAB2AAAD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48EF9DF4D16EA7B0D8ED63 /* Foundation.framework */; };
 		BE48EF9546EFE9E69E555A17 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48E4FC34EA054A2ED32259 /* SenTestingKit.framework */; };
@@ -59,17 +62,17 @@
 		5AEFFB77D6BD49A4B70AE85A /* libPods-PathDrawTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PathDrawTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		71EB854FB1084227B18AA5D8 /* Pods-PathDrawTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PathDrawTests.xcconfig"; path = "Pods/Pods-PathDrawTests.xcconfig"; sourceTree = SOURCE_ROOT; };
 		9C0629DA17B24A5E008A9C46 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		9C5535F117D06727003B6872 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		9C7B017717C5CAB5001548BD /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		BE48E0014F7E82D63F90E8E2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE48E1527860B2D6BC0569F6 /* PathOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathOperation.h; sourceTree = "<group>"; };
-		BE48E17A753A1E5B9EF24F99 /* RecurseFense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecurseFense.h; sourceTree = "<group>"; };
-		BE48E1D598C5C66308D8D714 /* DrawCacheImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawCacheImage.h; sourceTree = "<group>"; };
 		BE48E1D7978A3BE533E866B5 /* JSONValueTransformer+SLSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JSONValueTransformer+SLSerializer.h"; sourceTree = "<group>"; };
 		BE48E1E50DE0F6B5DF5E9966 /* CGUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGUtil.h; sourceTree = "<group>"; };
 		BE48E25B14C16EBEFCBE0AD3 /* PathOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PathOperation.m; sourceTree = "<group>"; };
 		BE48E29F091A5D67321F7BA8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		BE48E2A187906C6FE10AD718 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		BE48E2F1AD4E9AE2DE1B9644 /* SLSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVG.h; sourceTree = "<group>"; };
 		BE48E332D3DA04A9D0658153 /* CGUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGUtil.m; sourceTree = "<group>"; };
 		BE48E39AEAB1E75D6B1CA3FC /* UIView+RenderViewImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+RenderViewImage.h"; sourceTree = "<group>"; };
 		BE48E3DD8DEE223192276DD0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
@@ -77,7 +80,7 @@
 		BE48E414FD0123DB8F46655B /* DrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawDocument.h; sourceTree = "<group>"; };
 		BE48E45C6FD14D391DB5D94B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BE48E4FC34EA054A2ED32259 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		BE48E56F47AA21CDC92AD39E /* RecurseFense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecurseFense.m; sourceTree = "<group>"; };
+		BE48E5B87A7FA082CD57A36B /* SLSVGNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVGNode.m; sourceTree = "<group>"; };
 		BE48E5D64665F15C5FD93EEE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		BE48E5DD631B64932F38A7B3 /* PathDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PathDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48E6442472EE5C35B0B5D8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -85,7 +88,6 @@
 		BE48E86EEC2AC15966193DF6 /* PathDrawTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PathDrawTests.m; sourceTree = "<group>"; };
 		BE48E8C201024C03BDF3E19B /* transparent-checkerboard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "transparent-checkerboard@2x.png"; sourceTree = "<group>"; };
 		BE48E8D420910322439CED45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		BE48E8F0A2653A6111303BE6 /* DrawCacheImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawCacheImage.m; sourceTree = "<group>"; };
 		BE48E8F2A8097253643D358D /* PathDraw-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PathDraw-Prefix.pch"; sourceTree = "<group>"; };
 		BE48EA1F7E84E2A72BDC7CBE /* PathDrawTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathDrawTests.h; sourceTree = "<group>"; };
 		BE48EAB4A8E62E024D7BD877 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -93,13 +95,18 @@
 		BE48EAF3EFEE1E67529D5C8A /* DrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawView.h; sourceTree = "<group>"; };
 		BE48EAF50D07A4434747CC7A /* JSONValueTransformer+SLSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JSONValueTransformer+SLSerializer.m"; sourceTree = "<group>"; };
 		BE48EC0E2E74AF9896EF069A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BE48EC41E33FD52DC48D5BAB /* SLSVGView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVGView.h; sourceTree = "<group>"; };
 		BE48EC4DF72207C0EAAAE8F2 /* UIView+RenderViewImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+RenderViewImage.m"; sourceTree = "<group>"; };
+		BE48ED14A7D0076434B839C6 /* samples */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = samples; sourceTree = "<group>"; };
 		BE48ED594E37FB611DFBDBF9 /* transparent-checkerboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "transparent-checkerboard.png"; sourceTree = "<group>"; };
 		BE48ED5FCF99E1CD8293FB62 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BE48EDBC8EFCECB1876F3086 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		BE48EDEC68B28EC1EC7D0E44 /* DrawView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawView.m; sourceTree = "<group>"; };
+		BE48EDEC9C157C6AAA2F434A /* SLSVG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVG.m; sourceTree = "<group>"; };
+		BE48EE328AAD9471DC98873D /* SLSVGNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVGNode.h; sourceTree = "<group>"; };
 		BE48EE5E376D79CDB47E2DAD /* PathDrawTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PathDrawTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48EE626D69F0243EA24E4B /* PathDrawTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = "PathDrawTests-Info.plist"; sourceTree = "<group>"; };
+		BE48EF27C7A4E9CFF98A723E /* SLSVGView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSVGView.m; sourceTree = "<group>"; };
 		BE48EF631035A6B0515D3C4E /* DrawShape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawShape.m; sourceTree = "<group>"; };
 		BE48EF9DF4D16EA7B0D8ED63 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BE48EFF825A32EAEC142DCF6 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
@@ -110,6 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C5535F217D06727003B6872 /* libxml2.dylib in Frameworks */,
 				9C7B017917C5CABC001548BD /* CoreImage.framework in Frameworks */,
 				9C0629DB17B24A5E008A9C46 /* QuartzCore.framework in Frameworks */,
 				BE48E03BCFF55C4280038190 /* UIKit.framework in Frameworks */,
@@ -135,6 +143,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE48E0B5B797DF4840C5D0B5 /* done */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = done;
+			sourceTree = "<group>";
+		};
 		BE48E3F7926E9C33DFAD73E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +172,7 @@
 		BE48E86A8C8B735A8BD49580 = {
 			isa = PBXGroup;
 			children = (
+				9C5535F117D06727003B6872 /* libxml2.dylib */,
 				9C7B017717C5CAB5001548BD /* CoreImage.framework */,
 				9C0629DA17B24A5E008A9C46 /* QuartzCore.framework */,
 				BE48E3F7926E9C33DFAD73E2 /* Products */,
@@ -180,10 +196,6 @@
 				BE48E0014F7E82D63F90E8E2 /* ViewController.m */,
 				BE48EDEC68B28EC1EC7D0E44 /* DrawView.m */,
 				BE48EAF3EFEE1E67529D5C8A /* DrawView.h */,
-				BE48E8F0A2653A6111303BE6 /* DrawCacheImage.m */,
-				BE48E1D598C5C66308D8D714 /* DrawCacheImage.h */,
-				BE48E56F47AA21CDC92AD39E /* RecurseFense.m */,
-				BE48E17A753A1E5B9EF24F99 /* RecurseFense.h */,
 				BE48E25B14C16EBEFCBE0AD3 /* PathOperation.m */,
 				BE48E1527860B2D6BC0569F6 /* PathOperation.h */,
 				BE48EF631035A6B0515D3C4E /* DrawShape.m */,
@@ -196,6 +208,7 @@
 				BE48E1D7978A3BE533E866B5 /* JSONValueTransformer+SLSerializer.h */,
 				BE48EC4DF72207C0EAAAE8F2 /* UIView+RenderViewImage.m */,
 				BE48E39AEAB1E75D6B1CA3FC /* UIView+RenderViewImage.h */,
+				BE48EE82A701C807CE4D45C3 /* SVG */,
 			);
 			path = PathDraw;
 			sourceTree = "<group>";
@@ -212,6 +225,8 @@
 				BE48E29F091A5D67321F7BA8 /* Default-568h@2x.png */,
 				BE48E8C201024C03BDF3E19B /* transparent-checkerboard@2x.png */,
 				BE48ED594E37FB611DFBDBF9 /* transparent-checkerboard.png */,
+				BE48ED14A7D0076434B839C6 /* samples */,
+				BE48E0B5B797DF4840C5D0B5 /* done */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -223,6 +238,19 @@
 				BE48EA6D3E9018C051F4A3E1 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BE48EE82A701C807CE4D45C3 /* SVG */ = {
+			isa = PBXGroup;
+			children = (
+				BE48E5B87A7FA082CD57A36B /* SLSVGNode.m */,
+				BE48EE328AAD9471DC98873D /* SLSVGNode.h */,
+				BE48EDEC9C157C6AAA2F434A /* SLSVG.m */,
+				BE48E2F1AD4E9AE2DE1B9644 /* SLSVG.h */,
+				BE48EF27C7A4E9CFF98A723E /* SLSVGView.m */,
+				BE48EC41E33FD52DC48D5BAB /* SLSVGView.h */,
+			);
+			path = SVG;
 			sourceTree = "<group>";
 		};
 		BE48EF71C2EF28A083521D94 /* Frameworks */ = {
@@ -328,6 +356,7 @@
 				BE48ED06D50106B230536370 /* MainStoryboard_iPad.storyboard in Resources */,
 				BE48E6E0BF37A13F0745E1FA /* transparent-checkerboard@2x.png in Resources */,
 				BE48E0F768D23189F7C0CCF4 /* transparent-checkerboard.png in Resources */,
+				BE48E1F145818D78AD268DC2 /* samples in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,14 +443,15 @@
 				BE48EE7D2AADF423318E24F7 /* AppDelegate.m in Sources */,
 				BE48E4A20EC23B6AB45BD1DF /* ViewController.m in Sources */,
 				BE48E3B8CF9BC5CEBE192FD1 /* DrawView.m in Sources */,
-				BE48E01C56F643C4E4776AE1 /* DrawCacheImage.m in Sources */,
-				BE48E3C096E186119BD80433 /* RecurseFense.m in Sources */,
 				BE48E5F850A61FE02B3065EC /* PathOperation.m in Sources */,
 				BE48E909AC803D92FA64AEB2 /* DrawShape.m in Sources */,
 				BE48E5732F2AFAF2A3C65B5C /* CGUtil.m in Sources */,
 				BE48E312F30C36341D1929B3 /* DrawDocument.m in Sources */,
 				BE48EE5F81B53383DF0CA652 /* JSONValueTransformer+SLSerializer.m in Sources */,
 				BE48E52C176CCEC49C9457C8 /* UIView+RenderViewImage.m in Sources */,
+				BE48E718A59ACBB1C88D343B /* SLSVGNode.m in Sources */,
+				BE48EE73CC8D17068C5CEDCB /* SLSVG.m in Sources */,
+				BE48E78C6CE35429C8ADFA52 /* SLSVGView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,7 +535,7 @@
 				GCC_PREFIX_HEADER = "PathDraw/PathDraw-Prefix.pch";
 				INFOPLIST_FILE = "PathDraw/PathDraw-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/** \"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -562,7 +592,7 @@
 				GCC_PREFIX_HEADER = "PathDraw/PathDraw-Prefix.pch";
 				INFOPLIST_FILE = "PathDraw/PathDraw-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/** \"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
