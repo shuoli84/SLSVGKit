@@ -52,6 +52,7 @@
                 NSLog(@"Fill id: %@", fill);
                 SLSVGNode *gradient = [self.svg getNodeById:fill];
                 if(gradient){
+                    //TODO for offset with percentage, use the bbox size
                     if([gradient.type isEqualToString:@"linearGradient"]){
                         CGPoint p1 = CGPointMake([gradient[@"x1"] floatValue], [gradient[@"y1"] floatValue]);
                         CGPoint p2 = CGPointMake([gradient[@"x2"] floatValue], [gradient[@"y2"] floatValue]);
@@ -167,6 +168,7 @@
             }
         }
 
+        //TODO stroke-linecap
         NSString *strokeMiterLimit = svgNode[@"stroke-miterlimit"];
         if(strokeMiterLimit){
             shapeLayer.miterLimit = strokeMiterLimit.floatValue;
@@ -336,7 +338,7 @@
         }
 
         shapeLayer.anchorPoint = CGPointZero; //top left as anchor point
-        shapeLayer.frame = [self.svg[@"bounds"] CGRectValue];
+        shapeLayer.bounds = [self.svg[@"bounds"] CGRectValue];
         shapeLayer.masksToBounds = YES;
 
         CGAffineTransform transformMatrix = shapeLayer.affineTransform;

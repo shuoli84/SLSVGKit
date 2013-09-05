@@ -11,7 +11,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="100"
    height="100"
-   viewBox = "-50 -50 100 100"
+   viewBox = "-500 -500 200 200"
    id="svg2"
    version="1.1"
    inkscape:version="0.48+devel r10001"
@@ -52,12 +52,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-952.36218)">
+     transform="">
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 5,51.071428 50,3.5714284 95,51.071428 51.071429,96.071429 c 0,0 2.142857,-45.714286 -46.071429,-45.000001 z"
        id="path10"
        inkscape:connector-curvature="0"
-       transform="translate(0,952.36218)" />
+       transform="" />
   </g>
 </svg>

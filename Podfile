@@ -5,6 +5,7 @@ pod 'MGImageUtilities'
 pod 'JSONModel'
 pod 'StandardPaths'
 pod 'RaptureXML'
+pod 'CoreParse'
 
 target :PathDrawTests, :exclusive => true do
     pod 'Kiwi'

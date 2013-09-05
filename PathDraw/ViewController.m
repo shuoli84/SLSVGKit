@@ -20,6 +20,10 @@
 #import "SLSVGNode.h"
 
 #import "RXMLElement.h"
+#import "CPTokeniser.h"
+#import "CPQuotedRecogniser.h"
+#import "CPNumberRecogniser.h"
+#import "CPWhiteSpaceRecogniser.h"
 
 SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNode){
     SLSVGNode *n = [[SLSVGNode alloc]init];
@@ -35,7 +39,7 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
         }];
     }
     else if([element.tag isEqualToString:@"style"]){
-
+        NSLog(@"%@", element.text);
     }
     else {
         n.type = element.tag;
@@ -74,13 +78,19 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
 
     NSLog(@"View start loading");
 
-    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/breaking-1.svg"];
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Monkey.svg"];
+
+    CPTokeniser *tokeniser = [[CPTokeniser alloc] init];
+    [tokeniser addTokenRecogniser:[CPNumberRecogniser numberRecogniser]];
+    [tokeniser addTokenRecogniser:[CPWhiteSpaceRecogniser whiteSpaceRecogniser]];
+    [tokeniser addTokenRecogniser:[CPQuotedRecogniser quotedRecogniserWithStartQuote:@"/*" endQuote:@"*/" name:@"Comment"]];
+
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/RainbowWing.svg"];
+   ///Users/lishuo/Developer/PathDraw/PathDraw/samples/Blank_Map-Africa.svg
+//    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Blank_Map-Africa.svg"];
 
     SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
 
-    SLSVGView *svgView = [[SLSVGView alloc] initWithFrame:CGRectMake(100, 200, 600, 600)];
-    svgView.backgroundColor = [UIColor grayColor];
+    SLSVGView *svgView = [[SLSVGView alloc] initWithFrame:CGRectMake(20, 20, 700, 900)];
     [self.view addSubview:svgView];
     svgView.svg = node;
     [svgView draw];

@@ -464,10 +464,7 @@ float parseFloat(char const * string, unsigned int index, int* length){
         buf[bufIndex] = 0;
         NSString *name = [NSString stringWithUTF8String:buf];
 
-        NSLog(@"Transform name: %@", name);
-
         SKIPSPACE
-
         while (string[index] != '('){index++;}
 
         if (string[index] == '('){
