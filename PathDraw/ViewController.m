@@ -76,19 +76,14 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
 
     NSLog(@"View start loading");
 
-
-    CPTokeniser *tokeniser = [[CPTokeniser alloc] init];
-    [tokeniser addTokenRecogniser:[CPNumberRecogniser numberRecogniser]];
-    [tokeniser addTokenRecogniser:[CPWhiteSpaceRecogniser whiteSpaceRecogniser]];
-    [tokeniser addTokenRecogniser:[CPQuotedRecogniser quotedRecogniserWithStartQuote:@"/*" endQuote:@"*/" name:@"Comment"]];
-
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/MathCurve.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/lingrad01.svg"];
     // Users/lishuo/Developer/PathDraw/PathDraw/samples/Blank_Map-Africa.svg
     // RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Blank_Map-Africa.svg"];
 
     SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
 
     SLSVGView *svgView = [[SLSVGView alloc] initWithFrame:CGRectMake(20, 20, 700, 900)];
+    svgView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:svgView];
     svgView.svg = node;
     [svgView draw];

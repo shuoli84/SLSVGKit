@@ -125,7 +125,7 @@
         defaultPropertyValues = @{
             @"color" : @"white",
             @"stroke" : @"none",
-            @"fill" : @"black",
+            @"fill" : @"none",
             @"fill-opacity" : @"1",
             @"stroke-width" : @"1",
             @"stroke-linecap" : @"butt",
