@@ -13,6 +13,7 @@
 		9C7B017417C5C619001548BD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48EAB4A8E62E024D7BD877 /* CoreGraphics.framework */; };
 		9C7B017817C5CAB5001548BD /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C7B017717C5CAB5001548BD /* CoreImage.framework */; };
 		9C7B017917C5CABC001548BD /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C7B017717C5CAB5001548BD /* CoreImage.framework */; };
+		9CF6B32417D9485B0028D572 /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF6B32317D9485B0028D572 /* libcss.a */; };
 		BE48E00E6048FBA187DD3D4E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE48EA6D3E9018C051F4A3E1 /* InfoPlist.strings */; };
 		BE48E03BCFF55C4280038190 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */; };
 		BE48E0D6FD75416C5062DD9A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */; };
@@ -66,6 +67,7 @@
 		9C0629DA17B24A5E008A9C46 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		9C5535F117D06727003B6872 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		9C7B017717C5CAB5001548BD /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		9CF6B32317D9485B0028D572 /* libcss.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcss.a; path = ../../../../opt/netsurf/lib/libcss.a; sourceTree = "<group>"; };
 		BE48E0014F7E82D63F90E8E2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		BE48E0517F46469921E62A7D /* SLSVGRadialGradientLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSVGRadialGradientLayer.h; sourceTree = "<group>"; };
 		BE48E0B5EFCC2710CA64DE57 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -123,6 +125,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CF6B32417D9485B0028D572 /* libcss.a in Frameworks */,
 				9C5535F217D06727003B6872 /* libxml2.dylib in Frameworks */,
 				9C7B017917C5CABC001548BD /* CoreImage.framework in Frameworks */,
 				9C0629DB17B24A5E008A9C46 /* QuartzCore.framework in Frameworks */,
@@ -178,6 +181,7 @@
 		BE48E86A8C8B735A8BD49580 = {
 			isa = PBXGroup;
 			children = (
+				9CF6B32317D9485B0028D572 /* libcss.a */,
 				9C5535F117D06727003B6872 /* libxml2.dylib */,
 				9C7B017717C5CAB5001548BD /* CoreImage.framework */,
 				9C0629DA17B24A5E008A9C46 /* QuartzCore.framework */,
@@ -546,6 +550,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PathDraw/PathDraw-Prefix.pch";
 				INFOPLIST_FILE = "PathDraw/PathDraw-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/netsurf/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/** \"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
@@ -603,8 +611,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PathDraw/PathDraw-Prefix.pch";
 				INFOPLIST_FILE = "PathDraw/PathDraw-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/netsurf/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/** \"${PROJECT_DIR}/Pods\"/**";
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = "\"${PROJECT_DIR}/Pods\"/** \"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;

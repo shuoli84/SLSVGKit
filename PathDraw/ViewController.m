@@ -11,8 +11,6 @@
 #import "DrawView.h"
 #import "FVDeclareHelper.h"
 #import "UIControl+BlocksKit.h"
-#import "DrawDocument.h"
-#import "StandardPaths.h"
 #import "NSObject+AssociatedObjects.h"
 #import "UIView+RenderViewImage.h"
 #import "UIImage+ProportionalFill.h"
@@ -84,9 +82,9 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
     [tokeniser addTokenRecogniser:[CPWhiteSpaceRecogniser whiteSpaceRecogniser]];
     [tokeniser addTokenRecogniser:[CPQuotedRecogniser quotedRecogniserWithStartQuote:@"/*" endQuote:@"*/" name:@"Comment"]];
 
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/RainbowWing.svg"];
-   ///Users/lishuo/Developer/PathDraw/PathDraw/samples/Blank_Map-Africa.svg
-//    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Blank_Map-Africa.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/MathCurve.svg"];
+    // Users/lishuo/Developer/PathDraw/PathDraw/samples/Blank_Map-Africa.svg
+    // RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Blank_Map-Africa.svg"];
 
     SLSVGNode *node = createSVGNodeFromXMLElement(rootElement, nil);
 

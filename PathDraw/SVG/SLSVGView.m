@@ -272,6 +272,12 @@
                 else if ([name isEqualToString:@"Z"]){
                     [bezierPath closePath];
                 }
+                else if([name isEqualToString:@"Q"]){
+                    CGPoint controlPoint = CGPointMake([params[0] floatValue], [params[1] floatValue]);
+                    lastPoint = CGPointMake([params[2] floatValue], [params[3] floatValue]);
+
+                    [bezierPath addQuadCurveToPoint:lastPoint controlPoint:controlPoint];
+                }
 
                 lastCommand = command;
             }
