@@ -79,8 +79,8 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
     NSLog(@"View start loading");
 
     //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/breaking-1.svg"];
-    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/RainbowWing.svg"];
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Reinel_compass_rose-simplified-for-testing.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/RainbowWing.svg"];
+    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Reinel_compass_rose-simplified-for-testing.svg"];
     // RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Lion.svg"];
     // Users/lishuo/Developer/PathDraw/PathDraw/samples/Blank_Map-Africa.svg
     // RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Blank_Map-Africa.svg"];

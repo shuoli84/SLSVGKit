@@ -221,9 +221,9 @@ CGPoint derivativeForPointOnEllipse(float rx, float ry, float xAxisRotation, flo
     float l = sqrtf((send.x - sstart.x) * (send.x - sstart.x) + (send.y - sstart.y)*(send.y - sstart.y));
     float l_2 = l / 2;
     float h = sqrtf(ry * ry - l_2 * l_2);
-    float tan_a = (send.y - sstart.y) / (send.x - sstart.x);
-    float sin_a = tan_a / sqrtf(1 + tan_a * tan_a);
-    float cos_a = sin_a / tan_a;
+    float angle = angleForPoints(sstart, send);
+    float sin_a = sinf(angle);
+    float cos_a = cosf(angle);
 
     float rcy = (sstart.y + send.y) / 2 + (sweep?1:-1) * h * cos_a;
     float scx = ((sstart.x + send.x) / 2) + (sweep?-1:1) * h * sin_a;

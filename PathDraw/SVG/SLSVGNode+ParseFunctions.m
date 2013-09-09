@@ -70,14 +70,18 @@ float parseFloat(char const * string, unsigned int index, int* length){
         SKIPSPACE
         char c = string[index];
 
-        /*if(isdigit(c) || c == '-' || c == '.' || c == '+'){
+        if(isdigit(c) || c == '-' || c == '.' || c == '+'){
             c = lastCommand;
-            index--; //back ward one step
+            index--;
         }
-        */
+        else{
+            index++;
+        }
+
+        SKIPSPACE
+
         if (c == 'm' || c == 'M' || c =='L' || c =='l' || c == 't' || c == 'T'){
             // x y
-            index++;
             float x, y;
             int l = 0;
 
@@ -104,9 +108,7 @@ float parseFloat(char const * string, unsigned int index, int* length){
         }
         else if (c == 'h' || c == 'H' || c == 'v' || c =='V'){
             // x | y
-            index++;
-            while (index < length && isspace(string[index])){index++;}
-
+            SKIPSPACE
             int len;
             float v = parseFloat(string, index, &len);
 
@@ -134,7 +136,6 @@ float parseFloat(char const * string, unsigned int index, int* length){
             // x1 y1 x2 y2 x y
             float x1, y1, x2, y2, x, y;
             int len;
-            index++;
             SKIPSPACE
             x1 = parseFloat(string, index, &len);
             index+=len;
@@ -177,7 +178,6 @@ float parseFloat(char const * string, unsigned int index, int* length){
         }
         else if (c == 's' || c == 'S' || c == 'q' || c == 'Q'){
             // x2 y2 x y
-            index++;
             float x2, y2, x, y;
             int len;
             SKIPSPACE
@@ -195,7 +195,7 @@ float parseFloat(char const * string, unsigned int index, int* length){
             y = parseFloat(string, index, &len);
             index += len;
 
-            if(c > 'a'){
+            if(c >= 'a'){
                 x2 += last_x;
                 y2 += last_y;
                 last_x = x = x + last_x;
@@ -211,7 +211,6 @@ float parseFloat(char const * string, unsigned int index, int* length){
         }
         else if (c == 'a' || c == 'A'){
             // rx ry x-axis-rotation large-arc-flag sweep-flag x y
-            index++;
             SKIPNONDIGITAL
             float rx, ry, xAxisRotation, largeFlag, sweepFlag, x, y;
             int len;
@@ -236,15 +235,23 @@ float parseFloat(char const * string, unsigned int index, int* length){
             y = parseFloat(string, index, &len);
             index+=len;
 
+            if(c >= 'a'){
+                x += last_x;
+                y += last_y;
+            }
+            else{
+                last_x = x;
+                last_y = y;
+            }
+
             NSString *command = [NSString stringWithFormat:@"%c", toupper(c)];
             [parsedCommands addObject:@[command, @[@(rx), @(ry), @(xAxisRotation), @(largeFlag), @(sweepFlag), @(x), @(y)]]];
         }
         else if (c == 'z' || c == 'Z'){
             [parsedCommands addObject:@[@"Z"]];
-            index ++;
         }
         else{
-            index ++;
+            NSLog(@"got unsupported command %c", c);
         }
 
         lastCommand = c;

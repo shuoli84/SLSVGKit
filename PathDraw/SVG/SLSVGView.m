@@ -40,7 +40,7 @@
     CAShapeLayer *containerLayer = [[CAShapeLayer alloc] init];
 
     containerLayer.anchorPoint = CGPointZero; //top left as anchor point
-    containerLayer.masksToBounds = YES;
+    containerLayer.masksToBounds = NO;
 
     containerLayer.fillColor = [UIColor clearColor].CGColor;
     containerLayer.name = @"SLSVGLayer";
@@ -400,6 +400,9 @@
         float ry = [svgNode[@"ry"] floatValue];
 
         bezierPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(center.x - rx, center.y - ry, rx * 2, ry * 2)];
+    }
+    else if ([svgNode.type isEqualToString:@"use"]){
+        NSLog(@"We do not support <use> tag yet");
     }
     return bezierPath;
 }

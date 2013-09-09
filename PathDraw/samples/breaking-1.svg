@@ -6,14 +6,12 @@
    <stop offset="1" stop-color="#5C636A"/>
   </linearGradient>
  </defs>
- <g>
- <rect
-       rx="10"
-       style="opacity:0.98000004;color:#000000;fill:#ff0000;fill-opacity:0.99607843;fill-rule:nonzero;stroke:none;stroke-width:3;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       id="rect3006"
-       width="150"
-       height="150"
-       x="270.34662"
-       y="449.23022" />
- </g>
+<g>
+<path
+           d="M 39.416,95.16 C 33.65,103.95 30.76,110.5 28.93,117.18 15.24,113.43 13.54,127.15 23.04,131 13.71,145.8 7.84,173.93 0,212 L 0,103 a 103,103 0 0 0 39.416,-7.84 z"
+           id="s0"
+           stroke-miterlimit="9"
+           inkscape:connector-curvature="0"
+           style="fill:#0000ff;stroke:#1f1a17;stroke-width:1;stroke-miterlimit:9" />
+</g>
 </svg>
