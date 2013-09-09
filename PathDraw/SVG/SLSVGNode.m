@@ -165,6 +165,31 @@
         return value;
     }
 
+    SLSVGNode *svgRoot = self;
+    while (svgRoot.parentNode){
+        svgRoot = svgRoot.parentNode;
+    }
+
+    NSDictionary *cssRules = svgRoot.attributes[@"css"];
+    NSString *selector;
+
+    if(_attributes[@"id"]){
+        selector = [NSString stringWithFormat:@"#%@", _attributes[@"id"]];
+
+        value = cssRules[selector][name];
+        if(value){return value;}
+    }
+
+    if(_attributes[@"class"]){
+        selector = [NSString stringWithFormat:@".%@", _attributes[@"class"]];
+
+        value = cssRules[selector][name];
+        if(value){return value;}
+    }
+
+    value = cssRules[self.type][name];
+    if (value){return value;}
+
     if([propertyAbleToInherit containsObject:name] && self.parentNode){
         value = [self.parentNode attribute:name];
         if (value){

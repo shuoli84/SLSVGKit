@@ -102,6 +102,19 @@ SPEC_BEGIN(SLSVGSpec)
                 NSLog(@"%@", [SLSVGNode pathForArcStart:CGPointMake(0, 0) end:CGPointMake(1, 1.73205/2.f) rx:2 ry:1 xAxisRotation:0 largeFlat:NO sweepFlag:NO]);
 
             });
+
+            it(@"should able to parse simple css", ^{
+                NSDictionary *dict = [SLSVGNode parseCSS:@""
+                    ".st0{opacity:0.35;}\n"
+                    "\t.st1{opacity:0.75;}\n"
+                    "\t.st2{fill:#231F20;}\n"
+                    "\t.st3{fill:none;stroke:#231F20;stroke-miterlimit:10;}\n"
+                    "\t.ch0{fill:#F69321;}\n"
+                    "\t.ch1{fill:#29ABE2;}"
+                    ""];
+
+                [[dict[@".st1"][@"opacity"] should] equal:@"0.75"];
+            });
         });
     });
 SPEC_END

@@ -242,7 +242,6 @@ CGPoint derivativeForPointOnEllipse(float rx, float ry, float xAxisRotation, flo
 
     CGPoint dp2 = derivativeForPointOnEllipse(rx, ry, rotationInRad, a2);
     CGPoint c2 = CGPointMake(p2.x - k * dp2.x, p2.y - k * dp2.y);
-    NSLog(@"The center is %.5f %.5f cp1: %@ cp2: %@",center.x, center.y, NSStringFromCGPoint(c1), NSStringFromCGPoint(c2));
 
     return [NSString stringWithFormat:@"C %f,%f %f,%f %f,%f", c1.x, c1.y, c2.x, c2.y, end.x, end.y];
 }

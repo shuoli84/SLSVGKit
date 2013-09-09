@@ -15,6 +15,7 @@
 +(UIColor *)parseColor:(NSString*)colorString;
 +(NSArray *)parsePoints:(NSString*)points;
 +(NSDictionary *)parseStyle:(NSString*)style;
++(NSDictionary *)parseCSS:(NSString*)css;
 
 +(NSString*)parseUrlId:(NSString*)url;
 

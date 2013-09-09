@@ -596,4 +596,74 @@ float parseFloat(char const * string, unsigned int index, int* length){
     return nil;
 }
 
+NSString* parseSelector(char const *string, unsigned int index, int* len){
+    unsigned int startPos = index;
+    while(string[index] && string[index] != '{'){
+        index++;
+    }
+
+    *len = index - startPos;
+    char* nameBuf = malloc(index-startPos+1);
+    strncpy(nameBuf, string + startPos, index-startPos);
+    nameBuf[index-startPos] = 0;
+
+    NSString *selector = [NSString stringWithUTF8String:nameBuf];
+
+    free(nameBuf);
+
+    return selector;
+}
+
+NSString* parseRules(char const *string, unsigned int index, int* len){
+    unsigned int startPos = index;
+    while (string[index] && string[index] != '}'){
+        index++;
+    }
+
+    *len = index - startPos;
+    char *strBuf = malloc(index-startPos+1);
+    strncpy(strBuf, string + startPos, index - startPos);
+    strBuf[index-startPos] = 0;
+
+    NSString *rules = [NSString stringWithUTF8String:strBuf];
+    free(strBuf);
+    return rules;
+}
+
++(NSDictionary *)parseCSS:(NSString*)css{
+    //.st3{fill:none;stroke:#231F20;stroke-miterlimit:10;}
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    char const *string = css.UTF8String;
+    int length = css.length;
+    int len;
+    unsigned int index = 0;
+
+    for (;index < length;){
+        SKIPSPACE
+        NSString *selector = parseSelector(string, index, &len);
+        index+=len;
+
+        SKIPSPACE
+        if (string[index] == '{'){
+            index++;
+
+            SKIPSPACE
+            NSString *rules = parseRules(string, index, &len);
+            [dictionary setObject:[SLSVGNode parseStyle:rules] forKey:selector];
+            index += len;
+
+            SKIPSPACE
+            if(string[index] == '}'){
+                index++;
+            }
+        }
+        else{
+            SKIPSPACE
+            index++;
+        }
+    }
+
+    return dictionary;
+}
+
 @end

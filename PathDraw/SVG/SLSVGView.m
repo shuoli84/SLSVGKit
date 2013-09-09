@@ -104,11 +104,9 @@
     if(fill && ![fill isEqualToString:@"none"]){
         if([fill hasPrefix:@"url"]){
             fill = [SLSVGNode parseUrlId:fill];
-            NSLog(@"Fill id: %@", fill);
             SLSVGNode *gradient = [self.svg getNodeById:fill];
             CALayer *gradientLayer = nil;
             if(gradient){
-                //TODO for offset with percentage, use the bbox size
                 if([gradient.type isEqualToString:@"linearGradient"]){
                     CGPoint p1 = CGPointMake([gradient[@"x1"] floatValue], [gradient[@"y1"] floatValue]);
                     CGPoint p2 = CGPointMake([gradient[@"x2"] floatValue], [gradient[@"y2"] floatValue]);
@@ -155,7 +153,7 @@
                         CGRect bbox = [svgNode bbox];
                         center = CGPointMake(bbox.origin.x + bbox.size.width / 2.f, bbox.origin.y + bbox.size.height / 2.f);
                         focal = center;
-                        r = bbox.origin.x / 2.f; //todo need to apply the transform if the bbox is a rect
+                        r = bbox.origin.x / 2.f; //todo need to apply the transform if the bbox is not a square
                     }
 
                     SLSVGRadialGradientLayer *radialGradientLayer = [[SLSVGRadialGradientLayer alloc] init];
