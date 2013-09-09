@@ -22,6 +22,7 @@
 #import "CPQuotedRecogniser.h"
 #import "CPNumberRecogniser.h"
 #import "CPWhiteSpaceRecogniser.h"
+#import "SLSVGNode+ParseFunctions.h"
 
 SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNode){
     SLSVGNode *n = [[SLSVGNode alloc]init];
@@ -51,8 +52,8 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
         }
 
         if(n[@"style"]){
-            [n attr:[n parseStyle:n[@"style"]]];
-            [n removeAttribute:@"style"];
+            [n setAttributeDictionary:[SLSVGNode parseStyle:n[@"style"]]];
+            n[@"style"] = nil;
         }
     }
 
@@ -76,7 +77,8 @@ SLSVGNode* createSVGNodeFromXMLElement(RXMLElement *element, SLSVGNode *parentNo
 
     NSLog(@"View start loading");
 
-    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/lingrad01.svg"];
+    //RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/breaking-1.svg"];
+    RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/rounded-rects.svg"];
     // Users/lishuo/Developer/PathDraw/PathDraw/samples/Blank_Map-Africa.svg
     // RXMLElement *rootElement = [RXMLElement elementFromXMLFile:@"samples/Blank_Map-Africa.svg"];
 
