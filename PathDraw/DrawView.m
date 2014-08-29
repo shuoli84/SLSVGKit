@@ -129,7 +129,7 @@ typedef NS_ENUM(NSInteger, PointType){
 
         op.operationType = operationType;
 
-        if(pointIsNearPoint(location, [_currentShape.pathOperations[0] location])){
+        if(pointIsNearPoint(location, [(PathOperation*)_currentShape.pathOperations[0] location])){
             op.operationType = PathOperationClose;
             op.location = CGPointMake(CGFLOAT_MAX, CGFLOAT_MAX);
         }
@@ -211,7 +211,7 @@ typedef NS_ENUM(NSInteger, PointType){
         if(_currentPathOperation == nil){
             _currentShape = nil;
             for(DrawShape *shape in _draw.shapes){
-                if(pointIsNearPoint([shape.pathOperations[0] location], location)){
+                if(pointIsNearPoint([(PathOperation *)shape.pathOperations[0] location], location)){
                     _currentShape = shape;
                     _currentPathOperation = shape.pathOperations[0];
                 }
@@ -352,7 +352,7 @@ typedef NS_ENUM(NSInteger, PointType){
                 PathOperation *op = [[PathOperation alloc]init];
                 op.operationType = PathOperationLineTo;
                 op.locationType = LocationTypeRelativeToFirst;
-                CGPoint firstPoint = [_currentShape.pathOperations[0] location];
+                CGPoint firstPoint = [(PathOperation *)_currentShape.pathOperations[0] location];
                 op.location = CGPointMake(location.x - firstPoint.x, location.y - firstPoint.y);
                 op.controlPoint1 = op.location;
                 op.controlPoint2 = op.location;
@@ -382,7 +382,7 @@ typedef NS_ENUM(NSInteger, PointType){
                 [self appendOperationToCurrentShape:op undoable:NO];
                 op.locationType = LocationTypeRelativeToFirst;
             }
-            CGPoint firstLocation = [_currentShape.pathOperations[0] location];
+            CGPoint firstLocation = [(PathOperation *)_currentShape.pathOperations[0] location];
             op.location = CGPointMake(location.x - firstLocation.x, location.y - firstLocation.y);
             op.controlPoint1 = op.location;
             op.controlPoint2 = op.location;
@@ -578,8 +578,8 @@ typedef NS_ENUM(NSInteger, PointType){
                 }
 
                 if(_currentPathOperation.locationType == LocationTypeRelativeToFirst){
-                    location.x = location.x + [_currentShape.pathOperations[0] location].x;
-                    location.y = location.y + [_currentShape.pathOperations[0] location].y;
+                    location.x = location.x + [(PathOperation *)_currentShape.pathOperations[0] location].x;
+                    location.y = location.y + [(PathOperation *)_currentShape.pathOperations[0] location].y;
                 }
                 UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(location.x - 5, location.y - 5, 10, 10)];
                 [path stroke];

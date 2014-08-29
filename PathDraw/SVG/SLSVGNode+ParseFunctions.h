@@ -16,6 +16,7 @@
 +(NSArray *)parsePoints:(NSString*)points;
 +(NSDictionary *)parseStyle:(NSString*)style;
 +(NSDictionary *)parseCSS:(NSString*)css;
++(NSArray *)parseDashArray:(NSString*)dashArray;
 
 +(NSString*)parseUrlId:(NSString*)url;
 

@@ -673,4 +673,14 @@ NSString* parseRules(char const *string, unsigned int index, int* len){
     return dictionary;
 }
 
++(NSArray *)parseDashArray:(NSString*)dashArray{
+    NSArray *components = [dashArray componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" ,;"]];
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:components.count];
+    for(NSString *num in components){
+        if (num.length > 0){
+            [results addObject:@(num.floatValue)];
+        }
+    }
+    return results;
+}
 @end

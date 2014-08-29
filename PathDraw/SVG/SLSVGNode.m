@@ -143,7 +143,6 @@
             @"stroke-linecap" : @"butt",
             @"stroke-linejoin" : @"miter",
             @"stroke-miterlimit" : @"4",
-            @"stroke-dasharray" : @"none", // 1,2,3,4
             @"stroke-dashoffset" : @"0",
             @"stroke-opacity" : @"1",
         };

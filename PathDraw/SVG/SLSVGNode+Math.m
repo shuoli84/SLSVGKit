@@ -70,6 +70,8 @@
 
         return CGRectMake(minx, miny, maxx - minx, maxy - miny);
     }
+
+    return CGRectMake(0, 0, 0, 0);
 }
 
 +(CGPoint)pointOnPathStart:(CGPoint)p1 control1:(CGPoint)c1 control2:(CGPoint)c2 end:(CGPoint)p2 t:(float)t{
@@ -207,6 +209,9 @@ CGPoint derivativeForPointOnEllipse(float rx, float ry, float xAxisRotation, flo
 * 2, follow formula in http://www.spaceroots.org/documents/ellipse/elliptical-arc.pdf to calculate the control point
 */
 +(NSString*)pathForArcStart:(CGPoint)start end:(CGPoint)end rx:(float)rx ry:(float)ry xAxisRotation:(float)rotation largeFlat:(BOOL)large sweepFlag:(BOOL)sweep{
+    if(ABS(rx) < 0.00002 || ABS(ry) < 0.00002){
+        return [NSString stringWithFormat:@"L%f,%f", end.x, end.y];
+    }
     float rotationInRad = rotation * (float)M_PI / 180.f;
 
     CGPoint rstart = rotate(start, -rotationInRad);

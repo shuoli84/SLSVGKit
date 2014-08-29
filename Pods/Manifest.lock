@@ -1,0 +1,38 @@
+PODS:
+  - BlocksKit (1.8.2):
+    - libffi
+  - CoreParse (1.1)
+  - JSONModel (0.9.0)
+  - Kiwi (2.2)
+  - libffi (3.0.13)
+  - MGImageUtilities (0.0.1)
+  - RaptureXML (1.0.1)
+  - SLFlexibleView (0.0.3)
+  - StandardPaths (1.5.3)
+
+DEPENDENCIES:
+  - BlocksKit
+  - CoreParse
+  - JSONModel
+  - Kiwi
+  - MGImageUtilities
+  - RaptureXML
+  - SLFlexibleView (from `https://raw.github.com/shuoli84/FlexibleView2/master/SLFlexibleView-master.podspec`)
+  - StandardPaths
+
+EXTERNAL SOURCES:
+  SLFlexibleView:
+    :podspec: https://raw.github.com/shuoli84/FlexibleView2/master/SLFlexibleView-master.podspec
+
+SPEC CHECKSUMS:
+  BlocksKit: 7396526b0816734103f6133fbb1a520c8b04e80c
+  CoreParse: e9523576597e5860fba525888784378d8379fd4f
+  JSONModel: 0bd6b228cab887fa0637abe05e805aef8a624461
+  Kiwi: db174bba4ee8068b15d7122f1b22fb64b7c1d378
+  libffi: 64ef39353e747bb2b25e1026afd96a157bf9231c
+  MGImageUtilities: ab3580f2161b10f8a41331baea87aaafbd688950
+  RaptureXML: ef017fda62eb95c60300108366d1f0cd0c28cbd4
+  SLFlexibleView: 6be1b7df0149b16db29c7c3a9ec2efb2498f4421
+  StandardPaths: 792da6eedadcd321328c1f46fcac57c8dce9c0c0
+
+COCOAPODS: 0.19.1

@@ -86,7 +86,7 @@
 
 -(CGPoint)absolutePointForIndex:(NSInteger)index{
     NSAssert(index < _pathOperations.count, @"index out of bound, array count is %d", _pathOperations.count);
-    CGPoint firstPoint = [_pathOperations[0] location];
+    CGPoint firstPoint = [(PathOperation *)_pathOperations[0] location];
     PathOperation *op = _pathOperations[index];
     switch (op.locationType){
         case LocationTypeAbsolute:
@@ -105,7 +105,7 @@
         return resultArray;
     }
 
-    CGPoint firstPoint = [_pathOperations[0] location];
+    CGPoint firstPoint = [(PathOperation *)_pathOperations[0] location];
 
     for (PathOperation *op in _pathOperations){
         PathOperation *newOp = [op copy];

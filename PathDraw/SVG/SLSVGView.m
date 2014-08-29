@@ -20,6 +20,43 @@
 
 }
 
+- (CAShapeLayer*)pointTouchOnLayer:(CAShapeLayer *)shapeLayer point:(CGPoint)location{
+     for(CALayer *layer in shapeLayer.sublayers){
+        if([layer isKindOfClass:[CAShapeLayer class]]){
+            CAShapeLayer *sLayer = (CAShapeLayer*)layer;
+            BOOL locationInLayer = CGPathContainsPoint(sLayer.path, NULL, location, YES);
+            if(locationInLayer){
+                NSString *bbox = NSStringFromCGRect(CGPathGetBoundingBox(sLayer.path));
+                NSLog(@"Found location in layer %@", bbox);
+                return sLayer;
+            }
+        }
+     }
+     if(CGPathContainsPoint(shapeLayer.path, NULL, location, YES)){
+         NSString *bbox = NSStringFromCGRect(CGPathGetBoundingBox(shapeLayer.path));
+         NSLog(@"Found location in layer %@", bbox );
+         return shapeLayer;
+     }
+
+     return nil;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = touches.anyObject;
+    CGPoint location = [touch locationInView:self];
+
+    NSLog(@"Touch began");
+    //Go through all the shape sub layer, check whether the point in the path
+    for(CALayer *layer in self.layer.sublayers){
+        if([layer.name isEqualToString:@"SLSVGLayer"]){
+            CAShapeLayer *shapeLayer = [self pointTouchOnLayer:(CAShapeLayer *)layer point:location];
+            if(shapeLayer != nil){
+                NSLog(@"Found the click layer");
+            }
+        }
+    }
+}
+
 -(void)draw {
     [[self.layer sublayers] each:^(CALayer *sender) {
         if([sender.name isEqualToString:@"SLSVGLayer"]){
@@ -345,9 +382,9 @@
         "L%f,%f"
         "A%f,%f,0,0,1,%f,%f"
         "L%f,%f"
-        "A%f,%f,0,0,0,%f,%f"
+        "A%f,%f,0,0,1,%f,%f"
         "L%f,%f"
-        "A%f,%f,0,0,0,%f,%f"
+        "A%f,%f,0,0,1,%f,%f"
         "Z",  x, y + ry,
                 rx, ry, x + rx, y,
                 x + width - rx, y,
@@ -433,7 +470,7 @@
     else if([strokeLineCap isEqualToString:@"round"]){
         contentLayer.lineCap = kCALineCapRound;
     }
-    else if([strokeLineCap isEqualToString:@"squre"]){
+    else if([strokeLineCap isEqualToString:@"square"]){
         contentLayer.lineCap = kCALineCapSquare;
     }
 
@@ -453,6 +490,11 @@
         contentLayer.miterLimit = strokeMiterLimit.floatValue;
     }
 
+    NSString *strokeDashArray = svgNode[@"stroke-dasharray"];
+    if(strokeDashArray){
+        NSArray *dashArray = [SLSVGNode parseDashArray:strokeDashArray];
+        contentLayer.lineDashPattern = dashArray;
+    }
     // TODO check GPUImage CImage is not suitable
     NSString *filter = svgNode[@"filter"];
     if([filter hasPrefix:@"url"]){
